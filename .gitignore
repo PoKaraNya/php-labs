@@ -13,7 +13,8 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
-
+ C:\composer\composer.lock is not a valid lock file: open C:\composer\composer.lock: The system cannot find the file
+  specified.
 ###> symfony/asset-mapper ###
 /public/assets/
 /assets/vendor/

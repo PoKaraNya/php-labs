@@ -6,18 +6,32 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\ArrayShape;
+use JsonSerializable;
 
+/**
+ *
+ */
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category
+class Category implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
@@ -27,21 +41,34 @@ class Category
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'category')]
     private Collection $products;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->products = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): static
     {
         $this->name = $name;
@@ -49,11 +76,18 @@ class Category
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
+    /**
+     * @param string $description
+     * @return $this
+     */
     public function setDescription(string $description): static
     {
         $this->description = $description;
@@ -69,6 +103,10 @@ class Category
         return $this->products;
     }
 
+    /**
+     * @param Product $product
+     * @return $this
+     */
     public function addProduct(Product $product): static
     {
         if (!$this->products->contains($product)) {
@@ -79,6 +117,10 @@ class Category
         return $this;
     }
 
+    /**
+     * @param Product $product
+     * @return $this
+     */
     public function removeProduct(Product $product): static
     {
         if ($this->products->removeElement($product)) {
@@ -90,4 +132,17 @@ class Category
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    #[ArrayShape(['id' => "int|null", 'name' => "null|string", 'description' => "null|string"])] public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+        ];
+    }
+
 }

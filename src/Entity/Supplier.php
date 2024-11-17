@@ -6,27 +6,50 @@ use App\Repository\SupplierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\ArrayShape;
+use JsonSerializable;
 
+/**
+ *
+ */
 #[ORM\Entity(repositoryClass: SupplierRepository::class)]
-class Supplier
+class Supplier implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $contactName = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $contactPhone = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $contactEmail = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
@@ -42,22 +65,35 @@ class Supplier
     #[ORM\OneToMany(targetEntity: PurchaseOrder::class, mappedBy: 'supplier')]
     private Collection $purchaseOrders;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->products = new ArrayCollection();
         $this->purchaseOrders = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): static
     {
         $this->name = $name;
@@ -65,11 +101,18 @@ class Supplier
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getContactName(): ?string
     {
         return $this->contactName;
     }
 
+    /**
+     * @param string $contactName
+     * @return $this
+     */
     public function setContactName(string $contactName): static
     {
         $this->contactName = $contactName;
@@ -77,11 +120,18 @@ class Supplier
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getContactPhone(): ?string
     {
         return $this->contactPhone;
     }
 
+    /**
+     * @param string $contactPhone
+     * @return $this
+     */
     public function setContactPhone(string $contactPhone): static
     {
         $this->contactPhone = $contactPhone;
@@ -89,11 +139,18 @@ class Supplier
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getContactEmail(): ?string
     {
         return $this->contactEmail;
     }
 
+    /**
+     * @param string $contactEmail
+     * @return $this
+     */
     public function setContactEmail(string $contactEmail): static
     {
         $this->contactEmail = $contactEmail;
@@ -101,11 +158,18 @@ class Supplier
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getAddress(): ?string
     {
         return $this->address;
     }
 
+    /**
+     * @param string $address
+     * @return $this
+     */
     public function setAddress(string $address): static
     {
         $this->address = $address;
@@ -121,6 +185,10 @@ class Supplier
         return $this->products;
     }
 
+    /**
+     * @param Product $product
+     * @return $this
+     */
     public function addProduct(Product $product): static
     {
         if (!$this->products->contains($product)) {
@@ -131,6 +199,10 @@ class Supplier
         return $this;
     }
 
+    /**
+     * @param Product $product
+     * @return $this
+     */
     public function removeProduct(Product $product): static
     {
         if ($this->products->removeElement($product)) {
@@ -151,6 +223,10 @@ class Supplier
         return $this->purchaseOrders;
     }
 
+    /**
+     * @param PurchaseOrder $purchaseOrder
+     * @return $this
+     */
     public function addPurchaseOrder(PurchaseOrder $purchaseOrder): static
     {
         if (!$this->purchaseOrders->contains($purchaseOrder)) {
@@ -161,6 +237,10 @@ class Supplier
         return $this;
     }
 
+    /**
+     * @param PurchaseOrder $purchaseOrder
+     * @return $this
+     */
     public function removePurchaseOrder(PurchaseOrder $purchaseOrder): static
     {
         if ($this->purchaseOrders->removeElement($purchaseOrder)) {
@@ -172,4 +252,21 @@ class Supplier
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    #[ArrayShape(['id' => "int|null", 'name' => "null|string", 'contactName' => "null|string", 'contactPhone' => "null|string", 'contactEmail' => "null|string", 'address' => "null|string", "6" => "string"])] public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'contactName' => $this->getContactName(),
+            'contactPhone' => $this->getContactPhone(),
+            'contactEmail' => $this->getContactEmail(),
+            'address' => $this->getAddress(),
+            ''
+        ];
+    }
+
 }

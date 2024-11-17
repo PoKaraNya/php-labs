@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
+use App\Entity\Supplier;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,48 +17,6 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
-
-    public function save(Product $product): void
-    {
-        $this->_em->persist($product);
-        $this->_em->flush();
-    }
-
-    public function delete(Product $product): void
-    {
-        $this->_em->remove($product);
-        $this->_em->flush();
-    }
-
-    public function findByCategory(int $categoryId): array
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.category = :category')
-            ->setParameter('category', $categoryId)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findBySupplier(int $supplierId): array
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.supplier = :supplier')
-            ->setParameter('supplier', $supplierId)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByPriceRange(float $minPrice, float $maxPrice): array
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.price >= :minPrice')
-            ->andWhere('p.price <= :maxPrice')
-            ->setParameter('minPrice', $minPrice)
-            ->setParameter('maxPrice', $maxPrice)
-            ->getQuery()
-            ->getResult();
-    }
-
 
     //    /**
     //     * @return Product[] Returns an array of Product objects

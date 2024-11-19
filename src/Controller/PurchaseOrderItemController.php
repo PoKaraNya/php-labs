@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\PurchaseOrderItemService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,22 @@ class PurchaseOrderItemController extends AbstractController
      * @var PurchaseOrderItemService
      */
     private PurchaseOrderItemService $purchaseOrderItemService;
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
 
     /**
      * @param PurchaseOrderItemService $purchaseOrderItemService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(PurchaseOrderItemService $purchaseOrderItemService)
+    public function __construct(
+        PurchaseOrderItemService $purchaseOrderItemService,
+        EntityManagerInterface $entityManager)
     {
         $this->purchaseOrderItemService = $purchaseOrderItemService;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -64,6 +74,8 @@ class PurchaseOrderItemController extends AbstractController
 
         $purchaseOrderItem = $this->purchaseOrderItemService->createPurchaseOrderItem($requestData);
 
+        $this->entityManager->flush();
+
         return new JsonResponse($purchaseOrderItem, Response::HTTP_CREATED);
     }
 
@@ -80,6 +92,8 @@ class PurchaseOrderItemController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         $purchaseOrderItem = $this->purchaseOrderItemService->updatePurchaseOrderItem($id, $requestData);
+
+        $this->entityManager->flush();
 
         return new JsonResponse($purchaseOrderItem, Response::HTTP_OK);
     }

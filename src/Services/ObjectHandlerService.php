@@ -16,6 +16,7 @@ class ObjectHandlerService
      * @var RequestCheckerService
      */
     private RequestCheckerService $requestCheckerService;
+
     /**
      * @var EntityManagerInterface
      */
@@ -73,7 +74,6 @@ class ObjectHandlerService
     {
         $entity = $this->setObjectData($entity, $data);
         $this->entityManager->persist($entity);
-        $this->entityManager->flush();
 
         return $entity;
     }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\SupplierService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,22 @@ class SupplierController extends AbstractController
      * @var SupplierService
      */
     private SupplierService $supplierService;
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
 
     /**
      * @param SupplierService $supplierService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(SupplierService $supplierService)
+    public function __construct(
+        SupplierService $supplierService,
+        EntityManagerInterface $entityManager)
     {
         $this->supplierService = $supplierService;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -64,6 +74,8 @@ class SupplierController extends AbstractController
 
         $supplier = $this->supplierService->createSupplier($requestData);
 
+        $this->entityManager->flush();
+
         return new JsonResponse($supplier, Response::HTTP_CREATED);
     }
 
@@ -80,6 +92,8 @@ class SupplierController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         $supplier = $this->supplierService->updateSupplier($id, $requestData);
+
+        $this->entityManager->flush();
 
         return new JsonResponse($supplier, Response::HTTP_OK);
     }

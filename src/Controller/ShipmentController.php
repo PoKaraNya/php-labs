@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\ShipmentService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,22 @@ class ShipmentController extends AbstractController
      * @var ShipmentService
      */
     private ShipmentService $shipmentService;
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
 
     /**
      * @param ShipmentService $shipmentService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(ShipmentService $shipmentService)
+    public function __construct(
+        ShipmentService $shipmentService,
+        EntityManagerInterface $entityManager)
     {
         $this->shipmentService = $shipmentService;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -64,6 +74,8 @@ class ShipmentController extends AbstractController
 
         $shipment = $this->shipmentService->createShipment($requestData);
 
+        $this->entityManager->flush();
+
         return new JsonResponse($shipment, Response::HTTP_CREATED);
     }
 
@@ -79,6 +91,8 @@ class ShipmentController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         $shipment = $this->shipmentService->updateShipment($id, $requestData);
+
+        $this->entityManager->flush();
 
         return new JsonResponse($shipment, Response::HTTP_OK);
     }

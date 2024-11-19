@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\CustomerService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,22 @@ class CustomerController extends AbstractController
      * @var CustomerService
      */
     private CustomerService $customerService;
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
 
     /**
      * @param CustomerService $customerService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(CustomerService $customerService)
+    public function __construct(
+        CustomerService        $customerService,
+        EntityManagerInterface $entityManager)
     {
         $this->customerService = $customerService;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -63,6 +73,8 @@ class CustomerController extends AbstractController
 
         $customer = $this->customerService->createCustomer($requestData);
 
+        $this->entityManager->flush();
+
         return new JsonResponse($customer, Response::HTTP_CREATED);
     }
 
@@ -79,6 +91,8 @@ class CustomerController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         $customer = $this->customerService->updateCustomer($id, $requestData);
+
+        $this->entityManager->flush();
 
         return new JsonResponse($customer, Response::HTTP_OK);
     }

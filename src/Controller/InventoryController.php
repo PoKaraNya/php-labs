@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\InventoryService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,22 @@ class InventoryController extends AbstractController
      * @var InventoryService
      */
     private InventoryService $inventoryService;
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
 
     /**
      * @param InventoryService $inventoryService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(InventoryService $inventoryService)
+    public function __construct(
+        InventoryService       $inventoryService,
+        EntityManagerInterface $entityManager)
     {
         $this->inventoryService = $inventoryService;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -64,6 +74,8 @@ class InventoryController extends AbstractController
 
         $inventory = $this->inventoryService->createInventory($requestData);
 
+        $this->entityManager->flush();
+
         return new JsonResponse($inventory, Response::HTTP_CREATED);
     }
 
@@ -80,6 +92,8 @@ class InventoryController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         $inventory = $this->inventoryService->updateInventory($id, $requestData);
+
+        $this->entityManager->flush();
 
         return new JsonResponse($inventory, Response::HTTP_OK);
     }

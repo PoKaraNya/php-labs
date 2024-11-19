@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\OrderService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,22 @@ class OrderController extends AbstractController
      * @var OrderService
      */
     private OrderService $orderService;
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
 
     /**
      * @param OrderService $orderService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(OrderService $orderService)
+    public function __construct(
+        OrderService $orderService,
+        EntityManagerInterface $entityManager)
     {
         $this->orderService = $orderService;
+        $this->entityManager = $entityManager;
     }
 
 
@@ -65,6 +75,8 @@ class OrderController extends AbstractController
 
         $order = $this->orderService->createOrder($requestData);
 
+        $this->entityManager->flush();
+
         return new JsonResponse($order, Response::HTTP_CREATED);
     }
 
@@ -81,6 +93,8 @@ class OrderController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         $order = $this->orderService->updateOrder($id, $requestData);
+
+        $this->entityManager->flush();
 
         return new JsonResponse($order, Response::HTTP_OK);
     }

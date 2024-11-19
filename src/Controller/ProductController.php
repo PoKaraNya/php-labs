@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\ProductService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,14 +21,19 @@ class ProductController extends AbstractController
      * @var ProductService
      */
     private ProductService $productService;
+    private EntityManagerInterface $entityManager;
 
 
     /**
      * @param ProductService $productService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(ProductService $productService)
+    public function __construct(
+        ProductService $productService,
+        EntityManagerInterface $entityManager)
     {
         $this->productService = $productService;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -66,6 +72,8 @@ class ProductController extends AbstractController
 
         $product = $this->productService->createProduct($requestData);
 
+        $this->entityManager->flush();
+
         return new JsonResponse($product, Response::HTTP_CREATED);
     }
 
@@ -82,6 +90,8 @@ class ProductController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         $product = $this->productService->updateProduct($id, $requestData);
+
+        $this->entityManager->flush();
 
         return new JsonResponse($product, Response::HTTP_OK);
     }

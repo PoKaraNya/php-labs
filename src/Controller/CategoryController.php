@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\CategoryService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,13 +22,22 @@ class CategoryController extends AbstractController
      */
     private CategoryService $categoryService;
 
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
 
     /**
      * @param CategoryService $categoryService
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(CategoryService $categoryService)
+    public function __construct(
+        CategoryService $categoryService,
+        EntityManagerInterface $entityManager)
     {
         $this->categoryService = $categoryService;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -66,6 +76,8 @@ class CategoryController extends AbstractController
 
         $category = $this->categoryService->createCategory($requestData);
 
+        $this->entityManager->flush();
+
         return new JsonResponse($category, Response::HTTP_CREATED);
     }
 
@@ -82,6 +94,8 @@ class CategoryController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         $category = $this->categoryService->updateCategory($id, $requestData);
+
+        $this->entityManager->flush();
 
         return new JsonResponse($category, Response::HTTP_OK);
     }

@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
-use App\Repository\ProductRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Services\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,32 +10,68 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-#[Route('/product')]
+#[Route('/product', name: 'product_routes')]
 class ProductController extends AbstractController
 {
+    /**
+     * @var ProductService
+     */
+    private ProductService $productService;
+
 
     /**
-     * @var EntityManagerInterface
+     * @param ProductService $productService
      */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @param EntityManagerInterface $entityManager
-     */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(ProductService $productService)
     {
-        $this->entityManager = $entityManager;
+        $this->productService = $productService;
     }
 
     /**
      * @return JsonResponse
      */
-    #[Route('/', name: 'app_products_get', methods: ['GET'])]
-    public function index(): JsonResponse
+    #[Route('/', name: 'get_products', methods: ['GET'])]
+    public function getProducts(): JsonResponse
     {
-        $products = $this->entityManager->getRepository(Product::class)->findAll();
+        $products = $this->productService->getProducts();
+
         return new JsonResponse($products, Response::HTTP_OK);
     }
 
+    #[Route('/{id}', name: 'get_product', methods: ['GET'])]
+    public function getProduct(int $id): JsonResponse
+    {
+        $product = $this->productService->getProductById($id);
+
+        return new JsonResponse($product, Response::HTTP_OK);
+    }
+
+    #[Route('/', name: 'create_product', methods: ['POST'])]
+    public function createProduct(Request $request): JsonResponse
+    {
+        $requestData = json_decode($request->getContent(), true);
+
+        $product = $this->productService->createProduct($requestData);
+
+        return new JsonResponse($product, Response::HTTP_CREATED);
+    }
+
+    #[Route('/{id}', name: 'update_product', methods: ['PUT'])]
+    public function updateProduct(Request $request, int $id): JsonResponse
+    {
+        $requestData = json_decode($request->getContent(), true);
+
+        $product = $this->productService->updateProduct($id, $requestData);
+
+        return new JsonResponse($product, Response::HTTP_OK);
+    }
+
+    #[Route('/{id}', name: 'delete_product', methods: ['DELETE'])]
+    public function deleteProduct(int $id): JsonResponse
+    {
+        $this->productService->deleteProduct($id);
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
 
 }

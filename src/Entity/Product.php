@@ -23,7 +23,6 @@ class Product implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Assert\Positive(message: 'ID must be a positive number.')]
     private ?int $id = null;
 
     /**

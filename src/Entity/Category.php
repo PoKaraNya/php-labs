@@ -22,8 +22,6 @@ class Category implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Assert\Positive]
-    #[Assert\NotNull]
     private ?int $id = null;
 
     /**

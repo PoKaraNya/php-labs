@@ -25,8 +25,6 @@ class Order implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Assert\Positive]
-    #[Assert\NotNull(message: 'ID cannot be null.')]
     private ?int $id = null;
 
     /**

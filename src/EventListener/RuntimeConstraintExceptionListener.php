@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 class RuntimeConstraintExceptionListener

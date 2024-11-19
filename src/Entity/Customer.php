@@ -8,8 +8,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
+/**
+ *
+ */
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer implements JsonSerializable
 {
@@ -19,36 +23,61 @@ class Customer implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive]
+    #[Assert\NotNull]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Name cannot be blank.')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Name cannot be longer than {{ limit }} characters.'
+    )]
     private ?string $name = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Email cannot be blank.')]
+    #[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Email cannot be longer than {{ limit }} characters.'
+    )]
     private ?string $email = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Phone number cannot be blank.')]
+    #[Assert\Regex(
+        pattern: '/^\+?[0-9]{10,15}$/',
+        message: 'Phone number must be valid and contain 10 to 15 digits.'
+    )]
     private ?string $phone = null;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Address cannot be longer than {{ limit }} characters.'
+    )]
     private ?string $address = null;
 
     /**
-     * @var Collection<int, Order>
+     * @var Collection|ArrayCollection
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'customer', orphanRemoval: true)]
+    #[Assert\All([
+        new Assert\Type(type: Order::class, message: 'Each item must be a valid Order object.')
+    ])]
     private Collection $orders;
 
     /**

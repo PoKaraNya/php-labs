@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InventoryRepository::class)]
 class Inventory implements JsonSerializable
@@ -18,6 +19,8 @@ class Inventory implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive]
+    #[Assert\NotNull(message: 'ID cannot be null.')]
     private ?int $id = null;
 
     /**
@@ -25,18 +28,26 @@ class Inventory implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'inventories')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Product must be associated with an inventory record.')]
     private ?Product $product = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Quantity cannot be null.')]
+    #[Assert\PositiveOrZero(message: 'Quantity must be zero or a positive value.')]
     private ?int $quantity = null;
 
     /**
      * @var DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: 'Last updated date cannot be null.')]
+    #[Assert\Type(
+        type: DateTimeInterface::class,
+        message: 'Last updated must be a valid date and time.'
+    )]
     private ?DateTimeInterface $lastUpdated = null;
 
     /**

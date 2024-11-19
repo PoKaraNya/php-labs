@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -21,36 +22,47 @@ class Supplier implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive(message: 'ID must be a positive number.')]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Name cannot be blank.')]
     private ?string $name = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Contact name cannot be blank.')]
     private ?string $contactName = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Contact phone cannot be blank.')]
+    #[Assert\Regex(
+        pattern: '/^\+?[0-9]*$/',
+        message: 'Contact phone must contain only numbers and an optional "+" at the beginning.'
+    )]
     private ?string $contactPhone = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Contact email cannot be blank.')]
+    #[Assert\Email(message: 'Invalid email address.')]
     private ?string $contactEmail = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Address cannot be blank.')]
     private ?string $address = null;
 
     /**
@@ -64,7 +76,6 @@ class Supplier implements JsonSerializable
      */
     #[ORM\OneToMany(targetEntity: PurchaseOrder::class, mappedBy: 'supplier')]
     private Collection $purchaseOrders;
-
     /**
      *
      */

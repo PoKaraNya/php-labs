@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Services\CategoryService;
-use DateMalformedStringException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +57,7 @@ class CategoryController extends AbstractController
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws DateMalformedStringException
+     * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_category', methods: ['POST'])]
     public function createCategory(Request $request): JsonResponse
@@ -75,7 +74,7 @@ class CategoryController extends AbstractController
      * @param Request $request
      * @param int $id
      * @return JsonResponse
-     * @throws DateMalformedStringException
+     * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_category', methods: ['PATCH'])]
     public function updateCategory(Request $request, int $id): JsonResponse

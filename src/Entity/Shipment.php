@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -21,6 +22,7 @@ class Shipment implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive(message: 'ID must be a positive number.')]
     private ?int $id = null;
 
     /**
@@ -28,24 +30,31 @@ class Shipment implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'shipments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Order cannot be null.')]
     private ?Order $order = null;
 
     /**
      * @var DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: 'Shipment date cannot be null.')]
+    #[Assert\Type("\DateTimeInterface", message: 'Shipment date must be a valid date time.')]
     private ?DateTimeInterface $shipmentDate = null;
 
     /**
      * @var DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: 'Delivery date cannot be null.')]
+    #[Assert\Type("\DateTimeInterface", message: 'Delivery date must be a valid date time.')]
     private ?DateTimeInterface $deliveryDate = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Status cannot be blank.')]
+    #[Assert\Choice(choices: ['pending', 'shipped', 'delivered'], message: 'Invalid status value.')]
     private ?string $status = null;
 
     /**

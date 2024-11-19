@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -23,6 +24,7 @@ class PurchaseOrder implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive(message: 'ID must be a positive number.')]
     private ?int $id = null;
 
     /**
@@ -30,18 +32,23 @@ class PurchaseOrder implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'purchaseOrders')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Supplier cannot be null.')]
     private ?Supplier $supplier = null;
 
     /**
      * @var DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: 'Order date cannot be null.')]
+    #[Assert\Type("\DateTimeInterface", message: 'The order date must be a valid date.')]
     private ?DateTimeInterface $orderDate = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotNull(message: 'Status cannot be null.')]
+    #[Assert\Length(min: 3, max: 255, minMessage: 'Status must be at least {{ limit }} characters long.', maxMessage: 'Status cannot be longer than {{ limit }} characters.')]
     private ?string $status = null;
 
     /**
@@ -49,7 +56,6 @@ class PurchaseOrder implements JsonSerializable
      */
     #[ORM\OneToMany(targetEntity: PurchaseOrderItem::class, mappedBy: 'purchaseOrder')]
     private Collection $purchaseOrderItems;
-
     /**
      *
      */

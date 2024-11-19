@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -21,24 +22,39 @@ class Category implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive]
+    #[Assert\NotNull]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Name cannot be longer than {{ limit }} characters.'
+    )]
     private ?string $name = null;
+
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Description cannot be longer than {{ limit }} characters.'
+    )]
     private ?string $description = null;
 
     /**
      * @var Collection<int, Product>
      */
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'category')]
+    #[Assert\All([
+        new Assert\Type(type: Product::class, message: 'Each product must be a valid Product object.')
+    ])]
     private Collection $products;
 
     /**

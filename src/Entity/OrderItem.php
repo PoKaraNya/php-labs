@@ -6,6 +6,7 @@ use App\Repository\OrderItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: OrderItemRepository::class)]
@@ -17,18 +18,24 @@ class OrderItem implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive]
+    #[Assert\NotNull(message: 'ID cannot be null.')]
     private ?int $id = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Quantity cannot be null.')]
+    #[Assert\GreaterThanOrEqual(value: 1, message: 'Quantity must be at least 1.')]
     private ?int $quantity = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Price per unit cannot be null.')]
+    #[Assert\GreaterThanOrEqual(value: 0, message: 'Price per unit must be a positive value.')]
     private ?int $pricePerUnit = null;
 
     /**
@@ -36,6 +43,7 @@ class OrderItem implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Order cannot be null.')]
     private ?Order $order = null;
 
     /**
@@ -43,6 +51,7 @@ class OrderItem implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Product cannot be null.')]
     private ?Product $product = null;
 
     /**

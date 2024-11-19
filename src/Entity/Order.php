@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -24,18 +25,30 @@ class Order implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive]
+    #[Assert\NotNull(message: 'ID cannot be null.')]
     private ?int $id = null;
 
     /**
      * @var DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: 'Order date cannot be null.')]
+    #[Assert\Type(
+        type: DateTimeInterface::class,
+        message: 'Order date must be a valid date and time.'
+    )]
     private ?DateTimeInterface $orderDate = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotNull(message: 'Status cannot be null.')]
+    #[Assert\Choice(
+        choices: ['Pending', 'Processing', 'Shipped', 'Completed', 'Cancelled'],
+        message: 'Status must be one of "Pending", "Processing", "Shipped", "Completed", or "Cancelled".'
+    )]
     private ?string $status = null;
 
     /**
@@ -43,18 +56,21 @@ class Order implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Customer must be associated with the order.')]
     private ?Customer $customer = null;
 
     /**
      * @var Collection<int, OrderItem>
      */
-    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'orderId')]
+    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'orderId', cascade: ['persist', 'remove'])]
+    #[Assert\Valid]
     private Collection $orderItems;
 
     /**
      * @var Collection<int, Shipment>
      */
-    #[ORM\OneToMany(targetEntity: Shipment::class, mappedBy: 'orderId')]
+    #[ORM\OneToMany(targetEntity: Shipment::class, mappedBy: 'orderId', cascade: ['persist', 'remove'])]
+    #[Assert\Valid]
     private Collection $shipments;
 
     /**

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -22,24 +23,31 @@ class Product implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive(message: 'ID must be a positive number.')]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotNull(message: 'Name cannot be null.')]
+    #[Assert\Length(min: 3, max: 255, minMessage: 'Name must be at least {{ limit }} characters long.', maxMessage: 'Name cannot be longer than {{ limit }} characters.')]
     private ?string $name = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotNull(message: 'Description cannot be null.')]
+    #[Assert\Length(min: 10, max: 255, minMessage: 'Description must be at least {{ limit }} characters long.', maxMessage: 'Description cannot be longer than {{ limit }} characters.')]
     private ?string $description = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Price cannot be null.')]
+    #[Assert\GreaterThanOrEqual(value: 0, message: 'Price must be a positive number or zero.')]
     private ?int $price = null;
 
     /**
@@ -47,6 +55,7 @@ class Product implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Category cannot be null.')]
     private ?Category $category = null;
 
     /**
@@ -54,6 +63,7 @@ class Product implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Supplier cannot be null.')]
     private ?Supplier $supplier = null;
 
     /**
@@ -73,7 +83,6 @@ class Product implements JsonSerializable
      */
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'product')]
     private Collection $orderItems;
-
     /**
      *
      */

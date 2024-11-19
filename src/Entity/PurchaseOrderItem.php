@@ -6,6 +6,7 @@ use App\Repository\PurchaseOrderItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -19,34 +20,40 @@ class PurchaseOrderItem implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Positive(message: 'ID must be a positive number.')]
     private ?int $id = null;
 
     /**
      * @var PurchaseOrder|null
      */
-    #[ORM\ManyToOne(inversedBy: 'purchaseOrderItem')]
+    #[ORM\ManyToOne(inversedBy: 'purchaseOrderItems')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Purchase order cannot be null.')]
     private ?PurchaseOrder $purchaseOrder = null;
 
     /**
      * @var Product|null
      */
-    #[ORM\ManyToOne(inversedBy: 'purchaseOrderItem')]
+    #[ORM\ManyToOne(inversedBy: 'purchaseOrderItems')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Product cannot be null.')]
     private ?Product $product = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Assert\Positive(message: 'Quantity must be a positive number.')]
+    #[Assert\NotNull(message: 'Quantity cannot be null.')]
     private ?int $quantity = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Assert\Positive(message: 'Price per unit must be a positive number.')]
+    #[Assert\NotNull(message: 'Price per unit cannot be null.')]
     private ?int $pricePerUnit = null;
-
     /**
      * @return int|null
      */

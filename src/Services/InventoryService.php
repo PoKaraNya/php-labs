@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Entity\Inventory;
+use DateMalformedStringException;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -77,9 +79,11 @@ class InventoryService
         return $inventory;
     }
 
+
     /**
      * @param array $data
      * @return Inventory
+     * @throws DateMalformedStringException
      */
     public function createInventory(array $data): Inventory
     {
@@ -90,15 +94,17 @@ class InventoryService
         $product = $this->productService->getProductById($data['productId']);
         $inventory->setProduct($product);
 
-        $inventory->setLastUpdated(new \DateTime());
+        $inventory->setLastUpdated(new DateTime());
 
         return $this->objectHandlerService->saveEntity($inventory, $data);
     }
+
 
     /**
      * @param int $id
      * @param array $data
      * @return Inventory
+     * @throws DateMalformedStringException
      */
     public function updateInventory(int $id, array $data): Inventory
     {
@@ -109,7 +115,7 @@ class InventoryService
             $inventory->setProduct($product);
         }
 
-        $inventory->setLastUpdated(new \DateTime());
+        $inventory->setLastUpdated(new DateTime());
 
         return $this->objectHandlerService->saveEntity($inventory, $data);
     }

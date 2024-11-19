@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\InventoryRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
@@ -33,10 +34,10 @@ class Inventory implements JsonSerializable
     private ?int $quantity = null;
 
     /**
-     * @var \DateTimeInterface|null
+     * @var DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $lastUpdated = null;
+    private ?DateTimeInterface $lastUpdated = null;
 
     /**
      * @return int|null
@@ -85,18 +86,18 @@ class Inventory implements JsonSerializable
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getLastUpdated(): ?\DateTimeInterface
+    public function getLastUpdated(): ?DateTimeInterface
     {
         return $this->lastUpdated;
     }
 
     /**
-     * @param \DateTimeInterface $lastUpdated
+     * @param DateTimeInterface $lastUpdated
      * @return $this
      */
-    public function setLastUpdated(\DateTimeInterface $lastUpdated): static
+    public function setLastUpdated(DateTimeInterface $lastUpdated): static
     {
         $this->lastUpdated = $lastUpdated;
 
@@ -104,9 +105,9 @@ class Inventory implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    #[ArrayShape(['id' => "int|null", 'productId' => "\App\Entity\Product|null", 'quantity' => "int|null", 'lastUpdated' => "string"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'productId' => "\App\Entity\Product|null", 'quantity' => "int|null", 'lastUpdated' => "string"])] public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),

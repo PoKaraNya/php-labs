@@ -19,10 +19,11 @@ class RequestCheckerService
    */
   private ValidatorInterface $validator;
 
-  /**
-   * @param ValidatorInterface 
-   */
-  public function __construct(ValidatorInterface $validator)
+
+    /**
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(ValidatorInterface $validator)
   {
     $this->validator = $validator;
   }

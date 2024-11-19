@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Entity\PurchaseOrder;
+use DateMalformedStringException;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -72,6 +74,7 @@ class PurchaseOrderService
     /**
      * @param array $data
      * @return PurchaseOrder
+     * @throws DateMalformedStringException
      */
     public function createPurchaseOrder(array $data): PurchaseOrder
     {
@@ -82,16 +85,18 @@ class PurchaseOrderService
         $supplier = $this->supplierService->getSupplierById($data['supplierId']);
         $purchaseOrder->setSupplier($supplier);
 
-        $purchaseOrder->setOrderDate(new \DateTime());
+        $purchaseOrder->setOrderDate(new DateTime());
         $purchaseOrder->setStatus('Pending');
 
         return $this->objectHandlerService->saveEntity($purchaseOrder, $data);
     }
 
+
     /**
      * @param int $id
      * @param array $data
      * @return PurchaseOrder
+     * @throws DateMalformedStringException
      */
     public function updatePurchaseOrder(int $id, array $data): PurchaseOrder
     {

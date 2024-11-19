@@ -51,9 +51,11 @@ class ShipmentController extends AbstractController
         return new JsonResponse($shipment, Response::HTTP_OK);
     }
 
+
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_shipment', methods: ['POST'])]
     public function createShipment(Request $request): JsonResponse
@@ -69,6 +71,7 @@ class ShipmentController extends AbstractController
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_shipment', methods: ['PATCH'])]
     public function updateShipment(Request $request, int $id): JsonResponse

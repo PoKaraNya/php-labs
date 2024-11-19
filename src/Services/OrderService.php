@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Entity\Order;
-use App\Entity\OrderItem;
-use App\Entity\Product;
+use DateMalformedStringException;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -71,9 +71,11 @@ class OrderService
         return $order;
     }
 
+
     /**
      * @param array $data
      * @return Order
+     * @throws DateMalformedStringException
      */
     public function createOrder(array $data): Order
     {
@@ -84,7 +86,7 @@ class OrderService
         $customer = $this->customerService->getCustomerById($data['customerId']);
         $order->setCustomer($customer);
 
-        $order->setOrderDate(new \DateTime());
+        $order->setOrderDate(new DateTime());
         $order->setStatus('Pending');
 
         return $this->objectHandlerService->saveEntity($order, $data);
@@ -94,6 +96,7 @@ class OrderService
      * @param int $id
      * @param array $data
      * @return Order
+     * @throws DateMalformedStringException
      */
     public function updateOrder(int $id, array $data): Order
     {

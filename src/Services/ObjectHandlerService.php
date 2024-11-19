@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use DateMalformedStringException;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -20,8 +21,10 @@ class ObjectHandlerService
      */
     private EntityManagerInterface $entityManager;
 
+
     /**
-     * @param RequestCheckerService
+     * @param RequestCheckerService $requestCheckerService
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(
         RequestCheckerService  $requestCheckerService,
@@ -31,12 +34,12 @@ class ObjectHandlerService
         $this->entityManager = $entityManager;
     }
 
+
     /**
-     * setObjectData
-     *
      * @param mixed $object
-     * @param mixed $fields
+     * @param array $fields
      * @return mixed
+     * @throws DateMalformedStringException
      */
     public function setObjectData(mixed $object, array $fields): mixed
     {
@@ -59,10 +62,12 @@ class ObjectHandlerService
         return $object;
     }
 
+
     /**
      * @param object $entity
      * @param array $data
      * @return object|mixed
+     * @throws DateMalformedStringException
      */
     public function saveEntity(object $entity, array $data): object
     {

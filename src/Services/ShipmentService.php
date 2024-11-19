@@ -102,6 +102,7 @@ class ShipmentService
      * @param int $id
      * @param array $data
      * @return Shipment
+     * @throws DateMalformedStringException
      */
     public function updateShipment(int $id, array $data): Shipment
     {

@@ -182,9 +182,9 @@ class Customer implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    #[ArrayShape(['id' => "int|null", 'name' => "null|string", 'email' => "null|string", 'phone' => "null|string", 'address' => "null|string"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'name' => "null|string", 'email' => "null|string", 'phone' => "null|string", 'address' => "null|string"])] public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),

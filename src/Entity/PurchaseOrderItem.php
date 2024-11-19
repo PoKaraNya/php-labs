@@ -133,9 +133,9 @@ class PurchaseOrderItem implements JsonSerializable
 
 
     /**
-     * @return mixed
+     * @return array
      */
-    #[ArrayShape(['id' => "int|null", 'purchaseOrderId' => "\App\Entity\PurchaseOrder|null", 'productId' => "\App\Entity\Product|null", 'quantity' => "int|null", 'pricePerUnit' => "int|null"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'purchaseOrderId' => "\App\Entity\PurchaseOrder|null", 'productId' => "\App\Entity\Product|null", 'quantity' => "int|null", 'pricePerUnit' => "int|null"])] public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),

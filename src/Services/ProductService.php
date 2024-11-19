@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\Product;
+use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -88,9 +89,11 @@ class ProductService
         return $product;
     }
 
+
     /**
      * @param array $data
      * @return Product
+     * @throws DateMalformedStringException
      */
     public function createProduct(array $data): Product
     {
@@ -107,10 +110,12 @@ class ProductService
         return $this->objectHandlerService->saveEntity($product, $data);
     }
 
+
     /**
      * @param int $id
      * @param array $data
      * @return Product
+     * @throws DateMalformedStringException
      */
     public function updateProduct(int $id, array $data): Product
     {

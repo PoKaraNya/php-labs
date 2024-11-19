@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ShipmentRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
@@ -30,16 +31,16 @@ class Shipment implements JsonSerializable
     private ?Order $order = null;
 
     /**
-     * @var \DateTimeInterface|null
+     * @var DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $shipmentDate = null;
+    private ?DateTimeInterface $shipmentDate = null;
 
     /**
-     * @var \DateTimeInterface|null
+     * @var DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $deliveryDate = null;
+    private ?DateTimeInterface $deliveryDate = null;
 
     /**
      * @var string|null
@@ -75,18 +76,18 @@ class Shipment implements JsonSerializable
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getShipmentDate(): ?\DateTimeInterface
+    public function getShipmentDate(): ?DateTimeInterface
     {
         return $this->shipmentDate;
     }
 
     /**
-     * @param \DateTimeInterface $shipmentDate
+     * @param DateTimeInterface $shipmentDate
      * @return $this
      */
-    public function setShipmentDate(\DateTimeInterface $shipmentDate): static
+    public function setShipmentDate(DateTimeInterface $shipmentDate): static
     {
         $this->shipmentDate = $shipmentDate;
 
@@ -94,18 +95,18 @@ class Shipment implements JsonSerializable
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getDeliveryDate(): ?\DateTimeInterface
+    public function getDeliveryDate(): ?DateTimeInterface
     {
         return $this->deliveryDate;
     }
 
     /**
-     * @param \DateTimeInterface $deliveryDate
+     * @param DateTimeInterface $deliveryDate
      * @return $this
      */
-    public function setDeliveryDate(\DateTimeInterface $deliveryDate): static
+    public function setDeliveryDate(DateTimeInterface $deliveryDate): static
     {
         $this->deliveryDate = $deliveryDate;
 
@@ -132,9 +133,9 @@ class Shipment implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    #[ArrayShape(['id' => "int|null", 'order' => "\App\Entity\Order|null", 'shipmentDate' => "null|string", 'deliveryDate' => "null|string", 'status' => "null|string"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'order' => "\App\Entity\Order|null", 'shipmentDate' => "null|string", 'deliveryDate' => "null|string", 'status' => "null|string"])] public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),

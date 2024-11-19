@@ -254,9 +254,9 @@ class Supplier implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    #[ArrayShape(['id' => "int|null", 'name' => "null|string", 'contactName' => "null|string", 'contactPhone' => "null|string", 'contactEmail' => "null|string", 'address' => "null|string", "6" => "string"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'name' => "null|string", 'contactName' => "null|string", 'contactPhone' => "null|string", 'contactEmail' => "null|string", 'address' => "null|string", "6" => "string"])] public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),

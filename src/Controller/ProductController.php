@@ -53,9 +53,11 @@ class ProductController extends AbstractController
         return new JsonResponse($product, Response::HTTP_OK);
     }
 
+
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_product', methods: ['POST'])]
     public function createProduct(Request $request): JsonResponse
@@ -67,10 +69,12 @@ class ProductController extends AbstractController
         return new JsonResponse($product, Response::HTTP_CREATED);
     }
 
+
     /**
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_product', methods: ['PATCH'])]
     public function updateProduct(Request $request, int $id): JsonResponse

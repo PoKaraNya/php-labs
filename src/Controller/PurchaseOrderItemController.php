@@ -55,6 +55,7 @@ class PurchaseOrderItemController extends AbstractController
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_purchase_order_item', methods: ['POST'])]
     public function createPurchaseOrderItem(Request $request): JsonResponse
@@ -66,10 +67,12 @@ class PurchaseOrderItemController extends AbstractController
         return new JsonResponse($purchaseOrderItem, Response::HTTP_CREATED);
     }
 
+
     /**
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_purchase_order_item', methods: ['PATCH'])]
     public function updatePurchaseOrderItem(Request $request, int $id): JsonResponse

@@ -54,6 +54,7 @@ class CustomerController extends AbstractController
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_customer', methods: ['POST'])]
     public function createCustomer(Request $request): JsonResponse
@@ -65,10 +66,12 @@ class CustomerController extends AbstractController
         return new JsonResponse($customer, Response::HTTP_CREATED);
     }
 
+
     /**
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_customer', methods: ['PATCH'])]
     public function updateCustomer(Request $request, int $id): JsonResponse

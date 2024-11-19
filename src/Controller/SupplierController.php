@@ -51,9 +51,11 @@ class SupplierController extends AbstractController
         return new JsonResponse($supplier, Response::HTTP_OK);
     }
 
+
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_supplier', methods: ['POST'])]
     public function createSupplier(Request $request): JsonResponse
@@ -65,10 +67,12 @@ class SupplierController extends AbstractController
         return new JsonResponse($supplier, Response::HTTP_CREATED);
     }
 
+
     /**
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_supplier', methods: ['PATCH'])]
     public function updateSupplier(Request $request, int $id): JsonResponse

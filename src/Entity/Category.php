@@ -134,9 +134,9 @@ class Category implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    #[ArrayShape(['id' => "int|null", 'name' => "null|string", 'description' => "null|string"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'name' => "null|string", 'description' => "null|string"])] public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),

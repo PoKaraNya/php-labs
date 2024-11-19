@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\Category;
+use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -70,9 +71,11 @@ class CategoryService
         return $category;
     }
 
+
     /**
      * @param array $data
      * @return Category
+     * @throws DateMalformedStringException
      */
     public function createCategory(array $data): Category
     {
@@ -87,6 +90,7 @@ class CategoryService
      * @param int $id
      * @param array $data
      * @return Category
+     * @throws DateMalformedStringException
      */
     public function updateCategory(int $id, array $data): Category
     {

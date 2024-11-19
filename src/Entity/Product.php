@@ -322,10 +322,10 @@ class Product implements JsonSerializable
 
 
     /**
-     * @return mixed
+     * @return array
      */
-   #[ArrayShape(['id' => "int|null", 'categoryId' => "\App\Entity\Category|null", 'supplierId' => "\App\Entity\Supplier|null", 'name' => "null|string", 'description' => "null|string", 'price' => "int|null"])] public function jsonSerialize(): mixed
-    {
+   #[ArrayShape(['id' => "int|null", 'categoryId' => "\App\Entity\Category|null", 'supplierId' => "\App\Entity\Supplier|null", 'name' => "null|string", 'description' => "null|string", 'price' => "int|null"])] public function jsonSerialize(): array
+   {
         return [
             'id' => $this->getId(),
             'categoryId' => $this->getCategory(),

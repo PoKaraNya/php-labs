@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\OrderItem;
+use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -79,9 +80,11 @@ class OrderItemService
         return $orderItem;
     }
 
+
     /**
      * @param array $data
      * @return OrderItem
+     * @throws DateMalformedStringException
      */
     public function createOrderItem(array $data): OrderItem
     {
@@ -98,10 +101,12 @@ class OrderItemService
         return $this->objectHandlerService->saveEntity($orderItem, $data);
     }
 
+
     /**
      * @param int $id
      * @param array $data
      * @return OrderItem
+     * @throws DateMalformedStringException
      */
     public function updateOrderItem(int $id, array $data): OrderItem
     {

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\Customer;
+use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -72,9 +73,11 @@ class CustomerService
         return $customer;
     }
 
+
     /**
      * @param array $data
      * @return Customer
+     * @throws DateMalformedStringException
      */
     public function createCustomer(array $data): Customer
     {
@@ -85,10 +88,12 @@ class CustomerService
         return $this->objectHandlerService->saveEntity($customer, $data);
     }
 
+
     /**
      * @param int $id
      * @param array $data
      * @return Customer
+     * @throws DateMalformedStringException
      */
     public function updateCustomer(int $id, array $data): Customer
     {

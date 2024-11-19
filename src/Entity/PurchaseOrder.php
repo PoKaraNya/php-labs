@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PurchaseOrderRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -32,10 +33,10 @@ class PurchaseOrder implements JsonSerializable
     private ?Supplier $supplier = null;
 
     /**
-     * @var \DateTimeInterface|null
+     * @var DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $orderDate = null;
+    private ?DateTimeInterface $orderDate = null;
 
     /**
      * @var string|null
@@ -85,18 +86,18 @@ class PurchaseOrder implements JsonSerializable
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getOrderDate(): ?\DateTimeInterface
+    public function getOrderDate(): ?DateTimeInterface
     {
         return $this->orderDate;
     }
 
     /**
-     * @param \DateTimeInterface $orderDate
+     * @param DateTimeInterface $orderDate
      * @return $this
      */
-    public function setOrderDate(\DateTimeInterface $orderDate): static
+    public function setOrderDate(DateTimeInterface $orderDate): static
     {
         $this->orderDate = $orderDate;
 
@@ -162,9 +163,9 @@ class PurchaseOrder implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    #[ArrayShape(['id' => "int|null", 'supplierId' => "\App\Entity\Supplier|null", 'orderDate' => "string", 'status' => "null|string"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'supplierId' => "\App\Entity\Supplier|null", 'orderDate' => "string", 'status' => "null|string"])] public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),

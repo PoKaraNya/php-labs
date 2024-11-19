@@ -51,9 +51,11 @@ class OrderItemController extends AbstractController
         return new JsonResponse($orderItem, Response::HTTP_OK);
     }
 
+
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_order_item', methods: ['POST'])]
     public function createOrderItem(Request $request): JsonResponse
@@ -65,10 +67,12 @@ class OrderItemController extends AbstractController
         return new JsonResponse($orderItem, Response::HTTP_CREATED);
     }
 
+
     /**
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_order_item', methods: ['PATCH'])]
     public function updateOrderItem(Request $request, int $id): JsonResponse

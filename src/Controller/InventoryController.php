@@ -51,9 +51,11 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventory, Response::HTTP_OK);
     }
 
+
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/', name: 'create_inventory', methods: ['POST'])]
     public function createInventory(Request $request): JsonResponse
@@ -65,10 +67,12 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventory, Response::HTTP_CREATED);
     }
 
+
     /**
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \DateMalformedStringException
      */
     #[Route('/{id}', name: 'update_inventory', methods: ['PATCH'])]
     public function updateInventory(Request $request, int $id): JsonResponse

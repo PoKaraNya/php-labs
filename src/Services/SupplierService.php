@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\Supplier;
+use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -64,9 +65,11 @@ class SupplierService
         return $supplier;
     }
 
+
     /**
      * @param array $data
      * @return Supplier
+     * @throws DateMalformedStringException
      */
     public function createSupplier(array $data): Supplier
     {
@@ -77,10 +80,12 @@ class SupplierService
         return $this->objectHandlerService->saveEntity($supplier, $data);
     }
 
+
     /**
      * @param int $id
      * @param array $data
      * @return Supplier
+     * @throws DateMalformedStringException
      */
     public function updateSupplier(int $id, array $data): Supplier
     {

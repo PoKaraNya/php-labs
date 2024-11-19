@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Entity\Shipment;
-use App\Entity\Order;
-use App\Entity\Supplier;
+use DateMalformedStringException;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -32,27 +32,20 @@ class ShipmentService
      * @var OrderService
      */
     private OrderService $orderService;
-    /**
-     * @var SupplierService
-     */
-    private SupplierService $supplierService;
 
     /**
      * @param EntityManagerInterface $entityManager
      * @param ObjectHandlerService $objectHandlerService
      * @param OrderService $orderService
-     * @param SupplierService $supplierService
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         ObjectHandlerService   $objectHandlerService,
-        OrderService           $orderService,
-        SupplierService        $supplierService)
+        OrderService           $orderService)
     {
         $this->entityManager = $entityManager;
         $this->objectHandlerService = $objectHandlerService;
         $this->orderService = $orderService;
-        $this->supplierService = $supplierService;
     }
 
     /**
@@ -78,9 +71,11 @@ class ShipmentService
         return $shipment;
     }
 
+
     /**
      * @param array $data
      * @return Shipment
+     * @throws DateMalformedStringException
      */
     public function createShipment(array $data): Shipment
     {
@@ -91,7 +86,14 @@ class ShipmentService
         $order = $this->orderService->getOrderById($data['orderId']);
         $shipment->setOrder($order);
 
-        // shipmentDate, deliveryDate, status
+
+        $shipment->setShipmentDate(new DateTime());
+
+        $deliveryDate = new DateTime();
+        $deliveryDate->modify('+4 days');
+        $shipment->setDeliveryDate($deliveryDate);
+
+        $shipment->setStatus('Pending');
 
         return $this->objectHandlerService->saveEntity($shipment, $data);
     }

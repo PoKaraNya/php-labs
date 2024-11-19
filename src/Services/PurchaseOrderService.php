@@ -82,7 +82,8 @@ class PurchaseOrderService
         $supplier = $this->supplierService->getSupplierById($data['supplierId']);
         $purchaseOrder->setSupplier($supplier);
 
-        //order_date status total_cost встановлюються тут
+        $purchaseOrder->setOrderDate(new \DateTime());
+        $purchaseOrder->setStatus('Pending');
 
         return $this->objectHandlerService->saveEntity($purchaseOrder, $data);
     }

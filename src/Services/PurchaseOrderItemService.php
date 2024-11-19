@@ -95,8 +95,6 @@ class PurchaseOrderItemService
         $product = $this->productService->getProductById($data['productId']);
         $purchaseOrderItem->setProduct($product);
 
-        //total price встановлюється тут
-
         return $this->objectHandlerService->saveEntity($purchaseOrderItem, $data);
     }
 

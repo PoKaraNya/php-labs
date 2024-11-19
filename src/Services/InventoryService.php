@@ -17,7 +17,6 @@ class InventoryService
     public const REQUIRED_INVENTORY_CREATE_FIELDS = [
         'productId',
         'quantity',
-        'lastUpdated',
     ];
 
     /**
@@ -91,6 +90,8 @@ class InventoryService
         $product = $this->productService->getProductById($data['productId']);
         $inventory->setProduct($product);
 
+        $inventory->setLastUpdated(new \DateTime());
+
         return $this->objectHandlerService->saveEntity($inventory, $data);
     }
 
@@ -107,6 +108,8 @@ class InventoryService
             $product = $this->productService->getProductById($data['productId']);
             $inventory->setProduct($product);
         }
+
+        $inventory->setLastUpdated(new \DateTime());
 
         return $this->objectHandlerService->saveEntity($inventory, $data);
     }

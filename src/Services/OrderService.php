@@ -84,7 +84,8 @@ class OrderService
         $customer = $this->customerService->getCustomerById($data['customerId']);
         $order->setCustomer($customer);
 
-        //order_date and status мають встановлюватися тут
+        $order->setOrderDate(new \DateTime());
+        $order->setStatus('Pending');
 
         return $this->objectHandlerService->saveEntity($order, $data);
     }

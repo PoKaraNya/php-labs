@@ -53,7 +53,7 @@ class CategoryController extends AbstractController
         return new JsonResponse($category, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'update_category', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_category', methods: ['PATCH'])]
     public function updateCategory(Request $request, int $id): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);

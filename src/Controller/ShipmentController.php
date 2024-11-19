@@ -45,7 +45,7 @@ class ShipmentController extends AbstractController
         return new JsonResponse($shipment, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'update_shipment', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_shipment', methods: ['PATCH'])]
     public function updateShipment(Request $request, int $id): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);

@@ -48,7 +48,7 @@ class OrderController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'update_order', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_order', methods: ['PATCH'])]
     public function updateOrder(Request $request, int $id): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);

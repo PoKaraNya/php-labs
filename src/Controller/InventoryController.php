@@ -45,7 +45,7 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventory, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'update_inventory', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_inventory', methods: ['PATCH'])]
     public function updateInventory(Request $request, int $id): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);

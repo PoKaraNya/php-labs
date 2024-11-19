@@ -45,7 +45,7 @@ class OrderItemController extends AbstractController
         return new JsonResponse($orderItem, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'update_order_item', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_order_item', methods: ['PATCH'])]
     public function updateOrderItem(Request $request, int $id): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);

@@ -46,7 +46,7 @@ class PurchaseOrderItemController extends AbstractController
         return new JsonResponse($purchaseOrderItem, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'update_purchase_order_item', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_purchase_order_item', methods: ['PATCH'])]
     public function updatePurchaseOrderItem(Request $request, int $id): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);

@@ -56,7 +56,7 @@ class ProductController extends AbstractController
         return new JsonResponse($product, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'update_product', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_product', methods: ['PATCH'])]
     public function updateProduct(Request $request, int $id): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);

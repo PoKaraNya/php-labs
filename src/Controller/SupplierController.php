@@ -45,7 +45,7 @@ class SupplierController extends AbstractController
         return new JsonResponse($supplier, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'update_supplier', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_supplier', methods: ['PATCH'])]
     public function updateSupplier(Request $request, int $id): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);

@@ -45,7 +45,7 @@ class CustomerController extends AbstractController
         return new JsonResponse($customer, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'update_customer', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_customer', methods: ['PATCH'])]
     public function updateCustomer(Request $request, int $id): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);

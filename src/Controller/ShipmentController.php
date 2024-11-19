@@ -9,16 +9,28 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ *
+ */
 #[Route('/shipment', name: 'shipment_routes')]
 class ShipmentController extends AbstractController
 {
+    /**
+     * @var ShipmentService
+     */
     private ShipmentService $shipmentService;
 
+    /**
+     * @param ShipmentService $shipmentService
+     */
     public function __construct(ShipmentService $shipmentService)
     {
         $this->shipmentService = $shipmentService;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_shipments', methods: ['GET'])]
     public function getShipments(): JsonResponse
     {
@@ -27,6 +39,10 @@ class ShipmentController extends AbstractController
         return new JsonResponse($shipments, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_shipment', methods: ['GET'])]
     public function getShipment(int $id): JsonResponse
     {
@@ -35,6 +51,10 @@ class ShipmentController extends AbstractController
         return new JsonResponse($shipment, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/', name: 'create_shipment', methods: ['POST'])]
     public function createShipment(Request $request): JsonResponse
     {
@@ -45,6 +65,11 @@ class ShipmentController extends AbstractController
         return new JsonResponse($shipment, Response::HTTP_CREATED);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'update_shipment', methods: ['PATCH'])]
     public function updateShipment(Request $request, int $id): JsonResponse
     {
@@ -55,6 +80,10 @@ class ShipmentController extends AbstractController
         return new JsonResponse($shipment, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_shipment', methods: ['DELETE'])]
     public function deleteShipment(int $id): JsonResponse
     {

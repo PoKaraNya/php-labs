@@ -6,8 +6,14 @@ use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ *
+ */
 class ProductService
 {
+    /**
+     *
+     */
     public const REQUIRED_PRODUCT_CREATE_FIELDS = [
         'name',
         'description',
@@ -16,13 +22,35 @@ class ProductService
         'supplierId',
     ];
 
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
 
+    /**
+     * @var RequestCheckerService
+     */
     private RequestCheckerService $requestCheckerService;
+    /**
+     * @var ObjectHandlerService
+     */
     private ObjectHandlerService $objectHandlerService;
+    /**
+     * @var CategoryService
+     */
     private CategoryService $categoryService;
+    /**
+     * @var SupplierService
+     */
     private SupplierService $supplierService;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param RequestCheckerService $requestCheckerService
+     * @param ObjectHandlerService $objectHandlerService
+     * @param CategoryService $categoryService
+     * @param SupplierService $supplierService
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         RequestCheckerService  $requestCheckerService,
@@ -37,11 +65,18 @@ class ProductService
         $this->supplierService = $supplierService;
     }
 
+    /**
+     * @return array
+     */
     public function getProducts(): array
     {
         return $this->entityManager->getRepository(Product::class)->findAll();
     }
 
+    /**
+     * @param int $id
+     * @return Product
+     */
     public function getProductById(int $id): Product
     {
         $product = $this->entityManager->getRepository(Product::class)->find($id);
@@ -53,6 +88,10 @@ class ProductService
         return $product;
     }
 
+    /**
+     * @param array $data
+     * @return Product
+     */
     public function createProduct(array $data): Product
     {
         $this->requestCheckerService::check($data, self::REQUIRED_PRODUCT_CREATE_FIELDS);
@@ -68,6 +107,11 @@ class ProductService
         return $this->objectHandlerService->saveEntity($product, $data);
     }
 
+    /**
+     * @param int $id
+     * @param array $data
+     * @return Product
+     */
     public function updateProduct(int $id, array $data): Product
     {
         $product = $this->getProductById($id);
@@ -85,6 +129,10 @@ class ProductService
         return $this->objectHandlerService->saveEntity($product, $data);
     }
 
+    /**
+     * @param int $id
+     * @return void
+     */
     public function deleteProduct(int $id): void
     {
         $product = $this->getProductById($id);

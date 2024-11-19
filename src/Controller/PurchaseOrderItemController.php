@@ -9,16 +9,28 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ *
+ */
 #[Route('/purchase-order-item', name: 'purchase_order_item_routes')]
 class PurchaseOrderItemController extends AbstractController
 {
+    /**
+     * @var PurchaseOrderItemService
+     */
     private PurchaseOrderItemService $purchaseOrderItemService;
 
+    /**
+     * @param PurchaseOrderItemService $purchaseOrderItemService
+     */
     public function __construct(PurchaseOrderItemService $purchaseOrderItemService)
     {
         $this->purchaseOrderItemService = $purchaseOrderItemService;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_purchase_order_items', methods: ['GET'])]
     public function getPurchaseOrderItems(): JsonResponse
     {
@@ -27,6 +39,10 @@ class PurchaseOrderItemController extends AbstractController
         return new JsonResponse($purchaseOrderItems, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_purchase_order_item', methods: ['GET'])]
     public function getPurchaseOrderItem(int $id): JsonResponse
     {
@@ -36,6 +52,10 @@ class PurchaseOrderItemController extends AbstractController
     }
 
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/', name: 'create_purchase_order_item', methods: ['POST'])]
     public function createPurchaseOrderItem(Request $request): JsonResponse
     {
@@ -46,6 +66,11 @@ class PurchaseOrderItemController extends AbstractController
         return new JsonResponse($purchaseOrderItem, Response::HTTP_CREATED);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'update_purchase_order_item', methods: ['PATCH'])]
     public function updatePurchaseOrderItem(Request $request, int $id): JsonResponse
     {
@@ -56,6 +81,10 @@ class PurchaseOrderItemController extends AbstractController
         return new JsonResponse($purchaseOrderItem, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_purchase_order_item', methods: ['DELETE'])]
     public function deletePurchaseOrderItem(int $id): JsonResponse
     {

@@ -8,17 +8,37 @@ use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ *
+ */
 class OrderService
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var ObjectHandlerService
+     */
     private ObjectHandlerService $objectHandlerService;
 
+    /**
+     *
+     */
     public const REQUIRED_ORDER_CREATE_FIELDS = [
         'customerId',
         'orderItems',
     ];
+    /**
+     * @var CustomerService
+     */
     private CustomerService $customerService;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param ObjectHandlerService $objectHandlerService
+     * @param CustomerService $customerService
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         ObjectHandlerService   $objectHandlerService,
@@ -29,11 +49,18 @@ class OrderService
         $this->customerService = $customerService;
     }
 
+    /**
+     * @return array
+     */
     public function getOrders(): array
     {
         return $this->entityManager->getRepository(Order::class)->findAll();
     }
 
+    /**
+     * @param int $id
+     * @return Order
+     */
     public function getOrderById(int $id): Order
     {
         $order = $this->entityManager->getRepository(Order::class)->find($id);
@@ -45,6 +72,10 @@ class OrderService
         return $order;
     }
 
+    /**
+     * @param array $data
+     * @return Order
+     */
     public function createOrder(array $data): Order
     {
         RequestCheckerService::check($data, self::REQUIRED_ORDER_CREATE_FIELDS);
@@ -61,6 +92,11 @@ class OrderService
         return $this->objectHandlerService->saveEntity($order, $data);
     }
 
+    /**
+     * @param int $id
+     * @param array $data
+     * @return Order
+     */
     public function updateOrder(int $id, array $data): Order
     {
         $order = $this->getOrderById($id);
@@ -68,6 +104,10 @@ class OrderService
         return $this->objectHandlerService->saveEntity($order, $data);
     }
 
+    /**
+     * @param int $id
+     * @return void
+     */
     public function deleteOrder(int $id): void
     {
         $order = $this->getOrderById($id);

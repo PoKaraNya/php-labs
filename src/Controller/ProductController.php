@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
+/**
+ *
+ */
 #[Route('/product', name: 'product_routes')]
 class ProductController extends AbstractController
 {
@@ -38,6 +41,10 @@ class ProductController extends AbstractController
         return new JsonResponse($products, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_product', methods: ['GET'])]
     public function getProduct(int $id): JsonResponse
     {
@@ -46,6 +53,10 @@ class ProductController extends AbstractController
         return new JsonResponse($product, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/', name: 'create_product', methods: ['POST'])]
     public function createProduct(Request $request): JsonResponse
     {
@@ -56,6 +67,11 @@ class ProductController extends AbstractController
         return new JsonResponse($product, Response::HTTP_CREATED);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'update_product', methods: ['PATCH'])]
     public function updateProduct(Request $request, int $id): JsonResponse
     {
@@ -66,6 +82,10 @@ class ProductController extends AbstractController
         return new JsonResponse($product, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_product', methods: ['DELETE'])]
     public function deleteProduct(int $id): JsonResponse
     {

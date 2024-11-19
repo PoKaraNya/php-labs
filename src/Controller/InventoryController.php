@@ -9,16 +9,28 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ *
+ */
 #[Route('/inventory', name: 'inventory_routes')]
 class InventoryController extends AbstractController
 {
+    /**
+     * @var InventoryService
+     */
     private InventoryService $inventoryService;
 
+    /**
+     * @param InventoryService $inventoryService
+     */
     public function __construct(InventoryService $inventoryService)
     {
         $this->inventoryService = $inventoryService;
     }
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_inventories', methods: ['GET'])]
     public function getInventories(): JsonResponse
     {
@@ -27,6 +39,10 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventories, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_inventory', methods: ['GET'])]
     public function getInventory(int $id): JsonResponse
     {
@@ -35,6 +51,10 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventory, Response::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/', name: 'create_inventory', methods: ['POST'])]
     public function createInventory(Request $request): JsonResponse
     {
@@ -45,6 +65,11 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventory, Response::HTTP_CREATED);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'update_inventory', methods: ['PATCH'])]
     public function updateInventory(Request $request, int $id): JsonResponse
     {
@@ -55,6 +80,10 @@ class InventoryController extends AbstractController
         return new JsonResponse($inventory, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_inventory', methods: ['DELETE'])]
     public function deleteInventory(int $id): JsonResponse
     {

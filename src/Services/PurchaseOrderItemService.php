@@ -6,20 +6,44 @@ use App\Entity\PurchaseOrderItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ *
+ */
 class PurchaseOrderItemService
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var ObjectHandlerService
+     */
     private ObjectHandlerService $objectHandlerService;
 
+    /**
+     *
+     */
     public const REQUIRED_PURCHASE_ORDER_ITEM_CREATE_FIELDS = [
         'purchaseOrderId',
         'productId',
         'quantity',
         'pricePerUnit',
     ];
+    /**
+     * @var PurchaseOrderService
+     */
     private PurchaseOrderService $purchaseOrderService;
+    /**
+     * @var ProductService
+     */
     private ProductService $productService;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param ObjectHandlerService $objectHandlerService
+     * @param PurchaseOrderService $purchaseOrderService
+     * @param ProductService $productService
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         ObjectHandlerService   $objectHandlerService,
@@ -32,11 +56,18 @@ class PurchaseOrderItemService
         $this->productService = $productService;
     }
 
+    /**
+     * @return array
+     */
     public function getPurchaseOrderItems(): array
     {
         return $this->entityManager->getRepository(PurchaseOrderItem::class)->findAll();
     }
 
+    /**
+     * @param int $id
+     * @return PurchaseOrderItem
+     */
     public function getPurchaseOrderItemById(int $id): PurchaseOrderItem
     {
         $purchaseOrderItem = $this->entityManager->getRepository(PurchaseOrderItem::class)->find($id);
@@ -48,6 +79,10 @@ class PurchaseOrderItemService
         return $purchaseOrderItem;
     }
 
+    /**
+     * @param array $data
+     * @return PurchaseOrderItem
+     */
     public function createPurchaseOrderItem(array $data): PurchaseOrderItem
     {
         RequestCheckerService::check($data, self::REQUIRED_PURCHASE_ORDER_ITEM_CREATE_FIELDS);
@@ -65,6 +100,11 @@ class PurchaseOrderItemService
         return $this->objectHandlerService->saveEntity($purchaseOrderItem, $data);
     }
 
+    /**
+     * @param int $id
+     * @param array $data
+     * @return PurchaseOrderItem
+     */
     public function updatePurchaseOrderItem(int $id, array $data): PurchaseOrderItem
     {
         $purchaseOrderItem = $this->getPurchaseOrderItemById($id);
@@ -72,6 +112,10 @@ class PurchaseOrderItemService
         return $this->objectHandlerService->saveEntity($purchaseOrderItem, $data);
     }
 
+    /**
+     * @param int $id
+     * @return void
+     */
     public function deletePurchaseOrderItem(int $id): void
     {
         $purchaseOrderItem = $this->getPurchaseOrderItemById($id);

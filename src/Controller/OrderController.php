@@ -9,17 +9,29 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ *
+ */
 #[Route('/order', name: 'order_routes')]
 class OrderController extends AbstractController
 {
+    /**
+     * @var OrderService
+     */
     private OrderService $orderService;
 
+    /**
+     * @param OrderService $orderService
+     */
     public function __construct(OrderService $orderService)
     {
         $this->orderService = $orderService;
     }
 
 
+    /**
+     * @return JsonResponse
+     */
     #[Route('/', name: 'get_orders', methods: ['GET'])]
     public function getOrders(): JsonResponse
     {
@@ -28,6 +40,10 @@ class OrderController extends AbstractController
         return new JsonResponse($orders, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'get_order', methods: ['GET'])]
     public function getOrder(int $id): JsonResponse
     {
@@ -37,6 +53,10 @@ class OrderController extends AbstractController
     }
 
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/', name: 'create_order', methods: ['POST'])]
     public function createOrder(Request $request): JsonResponse
     {
@@ -48,6 +68,11 @@ class OrderController extends AbstractController
     }
 
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'update_order', methods: ['PATCH'])]
     public function updateOrder(Request $request, int $id): JsonResponse
     {
@@ -58,6 +83,10 @@ class OrderController extends AbstractController
         return new JsonResponse($order, Response::HTTP_OK);
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     #[Route('/{id}', name: 'delete_order', methods: ['DELETE'])]
     public function deleteOrder(int $id): JsonResponse
     {

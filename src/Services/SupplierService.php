@@ -6,11 +6,23 @@ use App\Entity\Supplier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ *
+ */
 class SupplierService
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var ObjectHandlerService
+     */
     private ObjectHandlerService $objectHandlerService;
 
+    /**
+     *
+     */
     public const REQUIRED_SUPPLIER_CREATE_FIELDS = [
         'name',
         'contactName',
@@ -19,17 +31,28 @@ class SupplierService
         'address',
     ];
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param ObjectHandlerService $objectHandlerService
+     */
     public function __construct(EntityManagerInterface $entityManager, ObjectHandlerService $objectHandlerService)
     {
         $this->entityManager = $entityManager;
         $this->objectHandlerService = $objectHandlerService;
     }
 
+    /**
+     * @return array
+     */
     public function getSuppliers(): array
     {
         return $this->entityManager->getRepository(Supplier::class)->findAll();
     }
 
+    /**
+     * @param int $id
+     * @return Supplier
+     */
     public function getSupplierById(int $id): Supplier
     {
         $supplier = $this->entityManager->getRepository(Supplier::class)->find($id);
@@ -41,6 +64,10 @@ class SupplierService
         return $supplier;
     }
 
+    /**
+     * @param array $data
+     * @return Supplier
+     */
     public function createSupplier(array $data): Supplier
     {
         RequestCheckerService::check($data, self::REQUIRED_SUPPLIER_CREATE_FIELDS);
@@ -50,6 +77,11 @@ class SupplierService
         return $this->objectHandlerService->saveEntity($supplier, $data);
     }
 
+    /**
+     * @param int $id
+     * @param array $data
+     * @return Supplier
+     */
     public function updateSupplier(int $id, array $data): Supplier
     {
         $supplier = $this->getSupplierById($id);
@@ -57,6 +89,10 @@ class SupplierService
         return $this->objectHandlerService->saveEntity($supplier, $data);
     }
 
+    /**
+     * @param int $id
+     * @return void
+     */
     public function deleteSupplier(int $id): void
     {
         $supplier = $this->getSupplierById($id);

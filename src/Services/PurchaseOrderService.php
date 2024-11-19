@@ -6,16 +6,36 @@ use App\Entity\PurchaseOrder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ *
+ */
 class PurchaseOrderService
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var ObjectHandlerService
+     */
     private ObjectHandlerService $objectHandlerService;
 
+    /**
+     *
+     */
     public const REQUIRED_PURCHASE_ORDER_CREATE_FIELDS = [
         'supplierId',
     ];
+    /**
+     * @var SupplierService
+     */
     private SupplierService $supplierService;
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param ObjectHandlerService $objectHandlerService
+     * @param SupplierService $supplierService
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         ObjectHandlerService   $objectHandlerService,
@@ -26,11 +46,18 @@ class PurchaseOrderService
         $this->supplierService = $supplierService;
     }
 
+    /**
+     * @return array
+     */
     public function getPurchaseOrders(): array
     {
         return $this->entityManager->getRepository(PurchaseOrder::class)->findAll();
     }
 
+    /**
+     * @param int $id
+     * @return PurchaseOrder
+     */
     public function getPurchaseOrderById(int $id): PurchaseOrder
     {
         $purchaseOrder = $this->entityManager->getRepository(PurchaseOrder::class)->find($id);
@@ -42,6 +69,10 @@ class PurchaseOrderService
         return $purchaseOrder;
     }
 
+    /**
+     * @param array $data
+     * @return PurchaseOrder
+     */
     public function createPurchaseOrder(array $data): PurchaseOrder
     {
         RequestCheckerService::check($data, self::REQUIRED_PURCHASE_ORDER_CREATE_FIELDS);
@@ -56,6 +87,11 @@ class PurchaseOrderService
         return $this->objectHandlerService->saveEntity($purchaseOrder, $data);
     }
 
+    /**
+     * @param int $id
+     * @param array $data
+     * @return PurchaseOrder
+     */
     public function updatePurchaseOrder(int $id, array $data): PurchaseOrder
     {
         $purchaseOrder = $this->getPurchaseOrderById($id);
@@ -63,6 +99,10 @@ class PurchaseOrderService
         return $this->objectHandlerService->saveEntity($purchaseOrder, $data);
     }
 
+    /**
+     * @param int $id
+     * @return void
+     */
     public function deletePurchaseOrder(int $id): void
     {
         $purchaseOrder = $this->getPurchaseOrderById($id);

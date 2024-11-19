@@ -38,12 +38,6 @@ class Order implements JsonSerializable
     private ?string $status = null;
 
     /**
-     * @var int|null
-     */
-    #[ORM\Column]
-    private ?int $totalAmount = null;
-
-    /**
      * @var Customer|null
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
@@ -118,25 +112,6 @@ class Order implements JsonSerializable
     }
 
     /**
-     * @return int|null
-     */
-    public function getTotalAmount(): ?int
-    {
-        return $this->totalAmount;
-    }
-
-    /**
-     * @param int $totalAmount
-     * @return $this
-     */
-    public function setTotalAmount(int $totalAmount): static
-    {
-        $this->totalAmount = $totalAmount;
-
-        return $this;
-    }
-
-    /**
      * @return Customer|null
      */
     public function getCustomer(): ?Customer
@@ -171,7 +146,7 @@ class Order implements JsonSerializable
     {
         if (!$this->orderItems->contains($orderItem)) {
             $this->orderItems->add($orderItem);
-            $orderItem->setOrderId($this);
+            $orderItem->setOrder($this);
         }
 
         return $this;
@@ -185,8 +160,8 @@ class Order implements JsonSerializable
     {
         if ($this->orderItems->removeElement($orderItem)) {
             // set the owning side to null (unless already changed)
-            if ($orderItem->getOrderId() === $this) {
-                $orderItem->setOrderId(null);
+            if ($orderItem->getOrder() === $this) {
+                $orderItem->setOrder(null);
             }
         }
 
@@ -209,7 +184,7 @@ class Order implements JsonSerializable
     {
         if (!$this->shipments->contains($shipment)) {
             $this->shipments->add($shipment);
-            $shipment->setOrderId($this);
+            $shipment->setOrder($this);
         }
 
         return $this;
@@ -223,8 +198,8 @@ class Order implements JsonSerializable
     {
         if ($this->shipments->removeElement($shipment)) {
             // set the owning side to null (unless already changed)
-            if ($shipment->getOrderId() === $this) {
-                $shipment->setOrderId(null);
+            if ($shipment->getOrder() === $this) {
+                $shipment->setOrder(null);
             }
         }
 
@@ -234,14 +209,13 @@ class Order implements JsonSerializable
     /**
      * @return mixed
      */
-    #[ArrayShape(['id' => "int|null", 'customerId' => "int|null", 'orderDate' => "string", 'status' => "null|string", 'totalAmount' => "int|null"])] public function jsonSerialize(): mixed
+   #[ArrayShape(['id' => "int|null", 'customerId' => "\App\Entity\Customer|null", 'orderDate' => "string", 'status' => "null|string"])] public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->getId(),
-            'customerId' => $this->getCustomer()->getId(),
+            'customerId' => $this->getCustomer(),
             'orderDate' => $this->getOrderDate()->format('Y-m-d'),
             'status' => $this->getStatus(),
-            'totalAmount' => $this->getTotalAmount(),
         ];
     }
 

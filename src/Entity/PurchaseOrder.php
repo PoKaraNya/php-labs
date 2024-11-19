@@ -44,12 +44,6 @@ class PurchaseOrder implements JsonSerializable
     private ?string $status = null;
 
     /**
-     * @var int|null
-     */
-    #[ORM\Column]
-    private ?int $totalCost = null;
-
-    /**
      * @var Collection<int, PurchaseOrderItem>
      */
     #[ORM\OneToMany(targetEntity: PurchaseOrderItem::class, mappedBy: 'purchaseOrder')]
@@ -128,24 +122,6 @@ class PurchaseOrder implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getTotalCost(): ?int
-    {
-        return $this->totalCost;
-    }
-
-    /**
-     * @param int $totalCost
-     * @return $this
-     */
-    public function setTotalCost(int $totalCost): static
-    {
-        $this->totalCost = $totalCost;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, PurchaseOrderItem>
@@ -188,14 +164,13 @@ class PurchaseOrder implements JsonSerializable
     /**
      * @return mixed
      */
-    #[ArrayShape(['id' => "int|null", 'supplierId' => "int|null", 'orderDate' => "string", 'status' => "null|string", 'totalCost' => "int|null"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'supplierId' => "\App\Entity\Supplier|null", 'orderDate' => "string", 'status' => "null|string"])] public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->getId(),
-            'supplierId' => $this->getSupplier()->getId(),
+            'supplierId' => $this->getSupplier(),
             'orderDate' => $this->getOrderDate()->format('Y-m-d'),
             'status' => $this->getStatus(),
-            'totalCost' => $this->getTotalCost(),
         ];
     }
 

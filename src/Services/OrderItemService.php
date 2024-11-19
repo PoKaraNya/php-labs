@@ -90,7 +90,7 @@ class OrderItemService
         $orderItem = new OrderItem();
 
         $order = $this->orderService->getOrderById($data['orderId']);
-        $orderItem->setOrderId($order);
+        $orderItem->setOrder($order);
 
         $product = $this->productService->getProductById($data['productId']);
         $orderItem->setProduct($product);

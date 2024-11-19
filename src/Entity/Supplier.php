@@ -265,7 +265,6 @@ class Supplier implements JsonSerializable
             'contactPhone' => $this->getContactPhone(),
             'contactEmail' => $this->getContactEmail(),
             'address' => $this->getAddress(),
-            ''
         ];
     }
 

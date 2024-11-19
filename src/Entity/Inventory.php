@@ -106,11 +106,11 @@ class Inventory implements JsonSerializable
     /**
      * @return mixed
      */
-    #[ArrayShape(['id' => "int|null", 'productId' => "int|null", 'quantity' => "int|null", 'lastUpdated' => "string"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'productId' => "\App\Entity\Product|null", 'quantity' => "int|null", 'lastUpdated' => "string"])] public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->getId(),
-            'productId' => $this->getProduct()->getId(),
+            'productId' => $this->getProduct(),
             'quantity' => $this->getQuantity(),
             'lastUpdated' => $this->getLastUpdated()->format('Y-m-d H:i:s')
         ];

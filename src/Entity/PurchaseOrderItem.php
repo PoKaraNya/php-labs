@@ -48,12 +48,6 @@ class PurchaseOrderItem implements JsonSerializable
     private ?int $pricePerUnit = null;
 
     /**
-     * @var int|null
-     */
-    #[ORM\Column]
-    private ?int $totalPrice = null;
-
-    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -137,37 +131,18 @@ class PurchaseOrderItem implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getTotalPrice(): ?int
-    {
-        return $this->totalPrice;
-    }
-
-    /**
-     * @param int $totalPrice
-     * @return $this
-     */
-    public function setTotalPrice(int $totalPrice): static
-    {
-        $this->totalPrice = $totalPrice;
-
-        return $this;
-    }
 
     /**
      * @return mixed
      */
-    #[ArrayShape(['id' => "int|null", 'purchaseOrderId' => "int|null", 'productId' => "int|null", 'quantity' => "int|null", 'pricePerUnit' => "int|null", 'totalPrice' => "int|null"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'purchaseOrderId' => "\App\Entity\PurchaseOrder|null", 'productId' => "\App\Entity\Product|null", 'quantity' => "int|null", 'pricePerUnit' => "int|null"])] public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->getId(),
-            'purchaseOrderId' => $this->getPurchaseOrder()->getId(),
-            'productId' => $this->getProduct()->getId(),
+            'purchaseOrderId' => $this->getPurchaseOrder(),
+            'productId' => $this->getProduct(),
             'quantity' => $this->getQuantity(),
             'pricePerUnit' => $this->getPricePerUnit(),
-            'totalPrice' => $this->getTotalPrice(),
         ];
     }
 

@@ -87,7 +87,6 @@ class AppFixtures extends Fixture
             $order->setCustomer($faker->randomElement($customers));
             $order->setOrderDate($faker->dateTimeThisYear);
             $order->setStatus($faker->randomElement(['new', 'processing', 'completed', 'cancelled']));
-            $order->setTotalAmount($faker->randomFloat(2, 20, 500));
             $manager->persist($order);
             $orders[] = $order;
         }
@@ -99,7 +98,7 @@ class AppFixtures extends Fixture
                 $orderItem = new OrderItem();
                 $product = $faker->randomElement($products);
                 $quantity = $faker->numberBetween(1, 5);
-                $orderItem->setOrderId($order);
+                $orderItem->setOrder($order);
                 $orderItem->setProduct($product);
                 $orderItem->setQuantity($quantity);
                 $orderItem->setPricePerUnit($product->getPrice());
@@ -111,7 +110,7 @@ class AppFixtures extends Fixture
         foreach ($orders as $order) {
             if ($order->getStatus() === 'completed') {
                 $shipment = new Shipment();
-                $shipment->setOrderId($order);
+                $shipment->setOrder($order);
                 $shipment->setShipmentDate($faker->dateTimeThisYear);
                 $shipment->setDeliveryDate($faker->dateTimeThisYear);
                 $shipment->setStatus($faker->randomElement(['in transit', 'delivered', 'delayed']));
@@ -126,7 +125,6 @@ class AppFixtures extends Fixture
             $purchaseOrder->setSupplier($faker->randomElement($suppliers));
             $purchaseOrder->setOrderDate($faker->dateTimeThisYear);
             $purchaseOrder->setStatus($faker->randomElement(['ordered', 'received', 'cancelled']));
-            $purchaseOrder->setTotalCost($faker->randomFloat(2, 100, 1000));
             $manager->persist($purchaseOrder);
             $purchaseOrders[] = $purchaseOrder;
         }
@@ -139,7 +137,6 @@ class AppFixtures extends Fixture
                 $purchaseOrderItem->setProduct($faker->randomElement($products));
                 $purchaseOrderItem->setQuantity($faker->numberBetween(10, 50));
                 $purchaseOrderItem->setPricePerUnit($faker->randomFloat(2, 5, 50));
-                $purchaseOrderItem->setTotalPrice($purchaseOrderItem->getQuantity() * $purchaseOrderItem->getPricePerUnit());
                 $manager->persist($purchaseOrderItem);
             }
         }

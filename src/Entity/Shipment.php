@@ -27,7 +27,7 @@ class Shipment implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'shipments')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Order $orderId = null;
+    private ?Order $order = null;
 
     /**
      * @var \DateTimeInterface|null
@@ -58,18 +58,18 @@ class Shipment implements JsonSerializable
     /**
      * @return Order|null
      */
-    public function getOrderId(): ?Order
+    public function getOrder(): ?Order
     {
-        return $this->orderId;
+        return $this->order;
     }
 
     /**
-     * @param Order|null $orderId
+     * @param Order|null $order
      * @return $this
      */
-    public function setOrderId(?Order $orderId): static
+    public function setOrder(?Order $order): static
     {
-        $this->orderId = $orderId;
+        $this->order = $order;
 
         return $this;
     }
@@ -134,11 +134,11 @@ class Shipment implements JsonSerializable
     /**
      * @return mixed
      */
-    #[ArrayShape(['id' => "int|null", 'orderId' => "\App\Entity\Order|null", 'shipmentDate' => "null|string", 'deliveryDate' => "null|string", 'status' => "null|string"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'order' => "\App\Entity\Order|null", 'shipmentDate' => "null|string", 'deliveryDate' => "null|string", 'status' => "null|string"])] public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->getId(),
-            'orderId' => $this->getOrderId(),
+            'order' => $this->getOrder(),
             'shipmentDate' => $this->getShipmentDate()?->format('Y-m-d H:i:s'),
             'deliveryDate' => $this->getDeliveryDate()?->format('Y-m-d H:i:s'),
             'status' => $this->getStatus(),

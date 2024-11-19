@@ -36,7 +36,7 @@ class OrderItem implements JsonSerializable
      */
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Order $orderId = null;
+    private ?Order $order = null;
 
     /**
      * @var Product|null
@@ -94,18 +94,18 @@ class OrderItem implements JsonSerializable
     /**
      * @return Order|null
      */
-    public function getOrderId(): ?Order
+    public function getOrder(): ?Order
     {
-        return $this->orderId;
+        return $this->order;
     }
 
     /**
-     * @param Order|null $orderId
+     * @param Order|null $order
      * @return $this
      */
-    public function setOrderId(?Order $orderId): static
+    public function setOrder(?Order $order): static
     {
-        $this->orderId = $orderId;
+        $this->order = $order;
 
         return $this;
     }
@@ -132,14 +132,14 @@ class OrderItem implements JsonSerializable
     /**
      * @return mixed
      */
-    #[ArrayShape(['id' => "int|null", 'orderId' => "\App\Entity\Order|null", 'quantity' => "int|null", 'pricePerUnit' => "int|null", 'product' => "int|null"])] public function jsonSerialize(): mixed
+    #[ArrayShape(['id' => "int|null", 'order' => "\App\Entity\Order|null", 'product' => "\App\Entity\Product|null", 'quantity' => "int|null", 'pricePerUnit' => "int|null"])] public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->getId(),
-            'orderId' => $this->getOrderId(),
+            'order' => $this->getOrder(),
+            'product' => $this->getProduct(),
             'quantity' => $this->getQuantity(),
             'pricePerUnit' => $this->getPricePerUnit(),
-            'product' => $this->getProduct()->getId(),
         ];
     }
 

@@ -89,7 +89,7 @@ class ShipmentService
         $shipment = new Shipment();
 
         $order = $this->orderService->getOrderById($data['orderId']);
-        $shipment->setOrderId($order);
+        $shipment->setOrder($order);
 
         // shipmentDate, deliveryDate, status
 

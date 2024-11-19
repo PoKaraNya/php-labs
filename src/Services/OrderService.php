@@ -26,8 +26,7 @@ class OrderService
      *
      */
     public const REQUIRED_ORDER_CREATE_FIELDS = [
-        'customerId',
-        'orderItems',
+        'customerId'
     ];
     /**
      * @var CustomerService
@@ -84,8 +83,6 @@ class OrderService
 
         $customer = $this->customerService->getCustomerById($data['customerId']);
         $order->setCustomer($customer);
-
-        // сюди мають приходити OrderItem-и і записуватися в бд
 
         //order_date and status мають встановлюватися тут
 

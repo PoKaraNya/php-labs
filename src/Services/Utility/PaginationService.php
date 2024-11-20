@@ -30,4 +30,5 @@ class PaginationService
             'totalItems' => $totalItems,
         ];
     }
+
 }

@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\Customer;
+use App\Repository\CustomerRepository;
+use App\Services\Utility\ObjectHandlerService;
+use App\Services\Utility\RequestCheckerService;
 use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -34,28 +37,39 @@ class CustomerService
      * @var ObjectHandlerService
      */
     private ObjectHandlerService $objectHandlerService;
+    /**
+     * @var CustomerRepository
+     */
+    private CustomerRepository $customerRepository;
+
 
     /**
      * @param EntityManagerInterface $entityManager
      * @param RequestCheckerService $requestCheckerService
      * @param ObjectHandlerService $objectHandlerService
+     * @param CustomerRepository $customerRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         RequestCheckerService $requestCheckerService,
-        ObjectHandlerService $objectHandlerService
+        ObjectHandlerService $objectHandlerService,
+        CustomerRepository $customerRepository
     ) {
         $this->entityManager = $entityManager;
         $this->requestCheckerService = $requestCheckerService;
         $this->objectHandlerService = $objectHandlerService;
+        $this->customerRepository = $customerRepository;
     }
 
     /**
+     * @param array $filters
+     * @param int $itemsPerPage
+     * @param int $page
      * @return array
      */
-    public function getCustomers(): array
+    public function getCustomers(array $filters, int $itemsPerPage, int $page): array
     {
-        return $this->entityManager->getRepository(Customer::class)->findAll();
+        return $this->customerRepository->getAllByFilter($filters, $itemsPerPage, $page);
     }
 
     /**

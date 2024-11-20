@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\Order;
+use App\Repository\OrderRepository;
+use App\Services\Utility\ObjectHandlerService;
+use App\Services\Utility\RequestCheckerService;
 use DateMalformedStringException;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,28 +35,35 @@ class OrderService
      * @var CustomerService
      */
     private CustomerService $customerService;
+    private OrderRepository $orderRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
      * @param ObjectHandlerService $objectHandlerService
      * @param CustomerService $customerService
+     * @param OrderRepository $orderRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         ObjectHandlerService   $objectHandlerService,
-        CustomerService        $customerService)
+        CustomerService        $customerService,
+        OrderRepository        $orderRepository)
     {
         $this->entityManager = $entityManager;
         $this->objectHandlerService = $objectHandlerService;
         $this->customerService = $customerService;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
+     * @param array $filters
+     * @param int $itemsPerPage
+     * @param int $page
      * @return array
      */
-    public function getOrders(): array
+    public function getOrders(array $filters, int $itemsPerPage, int $page): array
     {
-        return $this->entityManager->getRepository(Order::class)->findAll();
+        return $this->orderRepository->getAllByFilter($filters, $itemsPerPage, $page);
     }
 
     /**

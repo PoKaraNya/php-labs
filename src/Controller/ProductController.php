@@ -37,14 +37,19 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_products', methods: ['GET'])]
-    public function getProducts(): JsonResponse
+    public function getProducts(Request $request): JsonResponse
     {
-        $products = $this->productService->getProducts();
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : 10;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
 
-        return new JsonResponse($products, Response::HTTP_OK);
+        $data = $this->productService->getProducts($requestData, $itemsPerPage, $page);
+
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 
     /**

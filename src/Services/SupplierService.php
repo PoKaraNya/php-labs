@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\Supplier;
+use App\Repository\SupplierRepository;
+use App\Services\Utility\ObjectHandlerService;
+use App\Services\Utility\RequestCheckerService;
 use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -31,23 +34,32 @@ class SupplierService
         'contactEmail',
         'address',
     ];
+    private SupplierRepository $supplierRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
      * @param ObjectHandlerService $objectHandlerService
+     * @param SupplierRepository $supplierRepository
      */
-    public function __construct(EntityManagerInterface $entityManager, ObjectHandlerService $objectHandlerService)
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        ObjectHandlerService   $objectHandlerService,
+        SupplierRepository     $supplierRepository)
     {
         $this->entityManager = $entityManager;
         $this->objectHandlerService = $objectHandlerService;
+        $this->supplierRepository = $supplierRepository;
     }
 
     /**
+     * @param array $filters
+     * @param int $itemsPerPage
+     * @param int $page
      * @return array
      */
-    public function getSuppliers(): array
+    public function getSuppliers(array $filters, int $itemsPerPage, int $page): array
     {
-        return $this->entityManager->getRepository(Supplier::class)->findAll();
+        return $this->supplierRepository->getAllByFilter($filters, $itemsPerPage, $page);
     }
 
     /**

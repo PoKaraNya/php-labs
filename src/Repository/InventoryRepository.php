@@ -3,41 +3,49 @@
 namespace App\Repository;
 
 use App\Entity\Inventory;
+use App\Services\Utility\PaginationService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * @extends ServiceEntityRepository<Inventory>
  */
 class InventoryRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var PaginationService
+     */
+    private PaginationService $paginationService;
+
+    /**
+     * @param ManagerRegistry $registry
+     * @param PaginationService $paginationService
+     */
+    public function __construct(
+        ManagerRegistry   $registry,
+        PaginationService $paginationService)
     {
         parent::__construct($registry, Inventory::class);
+        $this->paginationService = $paginationService;
     }
 
-    //    /**
-    //     * @return Inventory[] Returns an array of Inventory objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('i.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @param array $data
+     * @param int $itemsPerPage
+     * @param int $page
+     * @return array
+     */
+    #[ArrayShape([
+        'inventories' => "array",
+        'totalPageCount' => "float",
+        'totalItems' => "int"
+    ])]
+    public function getAllByFilter(array $data, int $itemsPerPage, int $page): array
+    {
+        $queryBuilder = $this->createQueryBuilder('inventory');
 
-    //    public function findOneBySomeField($value): ?Inventory
-    //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $this->paginationService->paginate($queryBuilder, $itemsPerPage, $page);
+    }
+
 }

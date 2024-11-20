@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\Inventory;
+use App\Repository\InventoryRepository;
+use App\Services\Utility\ObjectHandlerService;
+use App\Services\Utility\RequestCheckerService;
 use DateMalformedStringException;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,31 +40,38 @@ class InventoryService
      * @var ProductService
      */
     private ProductService $productService;
+    private InventoryRepository $inventoryRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
      * @param RequestCheckerService $requestCheckerService
      * @param ObjectHandlerService $objectHandlerService
      * @param ProductService $productService
+     * @param InventoryRepository $inventoryRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         RequestCheckerService $requestCheckerService,
         ObjectHandlerService $objectHandlerService,
-        ProductService $productService
+        ProductService $productService,
+        InventoryRepository $inventoryRepository
     ) {
         $this->entityManager = $entityManager;
         $this->requestCheckerService = $requestCheckerService;
         $this->objectHandlerService = $objectHandlerService;
         $this->productService = $productService;
+        $this->inventoryRepository = $inventoryRepository;
     }
 
     /**
+     * @param array $filters
+     * @param int $itemsPerPage
+     * @param int $page
      * @return array
      */
-    public function getInventories(): array
+    public function getInventories(array $filters, int $itemsPerPage, int $page): array
     {
-        return $this->entityManager->getRepository(Inventory::class)->findAll();
+        return $this->inventoryRepository->getAllByFilter($filters, $itemsPerPage, $page);
     }
 
     /**

@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\Product;
+use App\Repository\ProductRepository;
+use App\Services\Utility\ObjectHandlerService;
+use App\Services\Utility\RequestCheckerService;
 use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -44,6 +47,7 @@ class ProductService
      * @var SupplierService
      */
     private SupplierService $supplierService;
+    private ProductRepository $productRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -51,27 +55,33 @@ class ProductService
      * @param ObjectHandlerService $objectHandlerService
      * @param CategoryService $categoryService
      * @param SupplierService $supplierService
+     * @param ProductRepository $productRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         RequestCheckerService  $requestCheckerService,
         ObjectHandlerService   $objectHandlerService,
         CategoryService        $categoryService,
-        SupplierService        $supplierService)
+        SupplierService        $supplierService,
+        ProductRepository      $productRepository)
     {
         $this->entityManager = $entityManager;
         $this->requestCheckerService = $requestCheckerService;
         $this->objectHandlerService = $objectHandlerService;
         $this->categoryService = $categoryService;
         $this->supplierService = $supplierService;
+        $this->productRepository = $productRepository;
     }
 
     /**
+     * @param array $filters
+     * @param int $itemsPerPage
+     * @param int $page
      * @return array
      */
-    public function getProducts(): array
+    public function getProducts(array $filters, int $itemsPerPage, int $page): array
     {
-        return $this->entityManager->getRepository(Product::class)->findAll();
+        return $this->productRepository->getAllByFilter($filters, $itemsPerPage, $page);
     }
 
     /**

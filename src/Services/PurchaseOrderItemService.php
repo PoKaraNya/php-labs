@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\PurchaseOrderItem;
+use App\Repository\PurchaseOrderItemRepository;
+use App\Services\Utility\ObjectHandlerService;
+use App\Services\Utility\RequestCheckerService;
 use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -38,31 +41,38 @@ class PurchaseOrderItemService
      * @var ProductService
      */
     private ProductService $productService;
+    private PurchaseOrderItemRepository $purchaseOrderItemRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
      * @param ObjectHandlerService $objectHandlerService
      * @param PurchaseOrderService $purchaseOrderService
      * @param ProductService $productService
+     * @param PurchaseOrderItemRepository $purchaseOrderItemRepository
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
-        ObjectHandlerService   $objectHandlerService,
-        PurchaseOrderService   $purchaseOrderService,
-        ProductService         $productService)
+        EntityManagerInterface      $entityManager,
+        ObjectHandlerService        $objectHandlerService,
+        PurchaseOrderService        $purchaseOrderService,
+        ProductService              $productService,
+        PurchaseOrderItemRepository $purchaseOrderItemRepository)
     {
         $this->entityManager = $entityManager;
         $this->objectHandlerService = $objectHandlerService;
         $this->purchaseOrderService = $purchaseOrderService;
         $this->productService = $productService;
+        $this->purchaseOrderItemRepository = $purchaseOrderItemRepository;
     }
 
     /**
+     * @param array $filters
+     * @param int $itemsPerPage
+     * @param int $page
      * @return array
      */
-    public function getPurchaseOrderItems(): array
+    public function getPurchaseOrderItems(array $filters, int $itemsPerPage, int $page): array
     {
-        return $this->entityManager->getRepository(PurchaseOrderItem::class)->findAll();
+        return $this->purchaseOrderItemRepository->getAllByFilter($filters, $itemsPerPage, $page);
     }
 
     /**

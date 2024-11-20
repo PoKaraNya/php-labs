@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\Shipment;
+use App\Repository\ShipmentRepository;
+use App\Services\Utility\ObjectHandlerService;
+use App\Services\Utility\RequestCheckerService;
 use DateMalformedStringException;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,28 +35,35 @@ class ShipmentService
      * @var OrderService
      */
     private OrderService $orderService;
+    private ShipmentRepository $shipmentRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
      * @param ObjectHandlerService $objectHandlerService
      * @param OrderService $orderService
+     * @param ShipmentRepository $shipmentRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         ObjectHandlerService   $objectHandlerService,
-        OrderService           $orderService)
+        OrderService           $orderService,
+        ShipmentRepository     $shipmentRepository)
     {
         $this->entityManager = $entityManager;
         $this->objectHandlerService = $objectHandlerService;
         $this->orderService = $orderService;
+        $this->shipmentRepository = $shipmentRepository;
     }
 
     /**
+     * @param array $filters
+     * @param int $itemsPerPage
+     * @param int $page
      * @return array
      */
-    public function getShipments(): array
+    public function getShipments(array $filters, int $itemsPerPage, int $page): array
     {
-        return $this->entityManager->getRepository(Shipment::class)->findAll();
+        return $this->shipmentRepository->getAllByFilter($filters, $itemsPerPage, $page);
     }
 
     /**

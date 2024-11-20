@@ -39,14 +39,19 @@ class ShipmentController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_shipments', methods: ['GET'])]
-    public function getShipments(): JsonResponse
+    public function getShipments(Request $request): JsonResponse
     {
-        $shipments = $this->shipmentService->getShipments();
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : 10;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
 
-        return new JsonResponse($shipments, Response::HTTP_OK);
+        $data = $this->shipmentService->getShipments($requestData, $itemsPerPage, $page);
+
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 
     /**

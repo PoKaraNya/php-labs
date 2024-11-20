@@ -39,14 +39,19 @@ class CustomerController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_customers', methods: ['GET'])]
-    public function getCustomers(): JsonResponse
+    public function getCustomers(Request $request): JsonResponse
     {
-        $customers = $this->customerService->getCustomers();
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : 10;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
 
-        return new JsonResponse($customers, Response::HTTP_OK);
+        $data = $this->customerService->getCustomers($requestData, $itemsPerPage, $page);
+
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 
     /**

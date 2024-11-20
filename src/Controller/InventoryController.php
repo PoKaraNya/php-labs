@@ -39,14 +39,19 @@ class InventoryController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_inventories', methods: ['GET'])]
-    public function getInventories(): JsonResponse
+    public function getInventories(Request $request): JsonResponse
     {
-        $inventories = $this->inventoryService->getInventories();
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : 10;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
 
-        return new JsonResponse($inventories, Response::HTTP_OK);
+        $data = $this->inventoryService->getInventories($requestData, $itemsPerPage, $page);
+
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 
     /**

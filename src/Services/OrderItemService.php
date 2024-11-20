@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\OrderItem;
+use App\Repository\OrderItemRepository;
+use App\Services\Utility\ObjectHandlerService;
+use App\Services\Utility\RequestCheckerService;
 use DateMalformedStringException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -38,31 +41,38 @@ class OrderItemService
      * @var ProductService
      */
     private ProductService $productService;
+    private OrderItemRepository $orderItemRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
      * @param ObjectHandlerService $objectHandlerService
      * @param OrderService $orderService
      * @param ProductService $productService
+     * @param OrderItemRepository $orderItemRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         ObjectHandlerService   $objectHandlerService,
         OrderService           $orderService,
-        ProductService         $productService)
+        ProductService         $productService,
+        OrderItemRepository    $orderItemRepository)
     {
         $this->entityManager = $entityManager;
         $this->objectHandlerService = $objectHandlerService;
         $this->orderService = $orderService;
         $this->productService = $productService;
+        $this->orderItemRepository = $orderItemRepository;
     }
 
     /**
+     * @param array $filters
+     * @param int $itemsPerPage
+     * @param int $page
      * @return array
      */
-    public function getOrderItems(): array
+    public function getOrderItems(array $filters, int $itemsPerPage, int $page): array
     {
-        return $this->entityManager->getRepository(OrderItem::class)->findAll();
+        return $this->orderItemRepository->getAllByFilter($filters, $itemsPerPage, $page);
     }
 
     /**

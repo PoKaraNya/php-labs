@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\PurchaseOrder;
+use App\Repository\PurchaseOrderRepository;
+use App\Services\Utility\ObjectHandlerService;
+use App\Services\Utility\RequestCheckerService;
 use DateMalformedStringException;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,28 +35,35 @@ class PurchaseOrderService
      * @var SupplierService
      */
     private SupplierService $supplierService;
+    private PurchaseOrderRepository $purchaseOrderRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
      * @param ObjectHandlerService $objectHandlerService
      * @param SupplierService $supplierService
+     * @param PurchaseOrderRepository $purchaseOrderRepository
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
-        ObjectHandlerService   $objectHandlerService,
-        SupplierService        $supplierService)
+        EntityManagerInterface  $entityManager,
+        ObjectHandlerService    $objectHandlerService,
+        SupplierService         $supplierService,
+        PurchaseOrderRepository $purchaseOrderRepository)
     {
         $this->entityManager = $entityManager;
         $this->objectHandlerService = $objectHandlerService;
         $this->supplierService = $supplierService;
+        $this->purchaseOrderRepository = $purchaseOrderRepository;
     }
 
     /**
+     * @param array $filters
+     * @param int $itemsPerPage
+     * @param int $page
      * @return array
      */
-    public function getPurchaseOrders(): array
+    public function getPurchaseOrders(array $filters, int $itemsPerPage, int $page): array
     {
-        return $this->entityManager->getRepository(PurchaseOrder::class)->findAll();
+        return $this->purchaseOrderRepository->getAllByFilter($filters, $itemsPerPage, $page);
     }
 
     /**

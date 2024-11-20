@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Utility;
 
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;

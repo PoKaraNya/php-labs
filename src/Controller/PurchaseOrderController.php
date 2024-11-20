@@ -39,14 +39,19 @@ class PurchaseOrderController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_purchase_orders', methods: ['GET'])]
-    public function getPurchaseOrders(): JsonResponse
+    public function getPurchaseOrders(Request $request): JsonResponse
     {
-        $purchaseOrders = $this->purchaseOrderService->getPurchaseOrders();
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : 10;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
 
-        return new JsonResponse($purchaseOrders, Response::HTTP_OK);
+        $data = $this->purchaseOrderService->getPurchaseOrders($requestData, $itemsPerPage, $page);
+
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 
     /**

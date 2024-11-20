@@ -33,23 +33,30 @@ class CategoryController extends AbstractController
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
-        CategoryService $categoryService,
+        CategoryService        $categoryService,
         EntityManagerInterface $entityManager)
     {
         $this->categoryService = $categoryService;
         $this->entityManager = $entityManager;
     }
 
+
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     #[Route('/', name: 'get_categories', methods: ['GET'])]
-    public function getCategories(): JsonResponse
+    public function getCategories(Request $request): JsonResponse
     {
-        $categories = $this->categoryService->getCategories();
+        $requestData = $request->query->all();
+        $itemsPerPage = isset($requestData['itemsPerPage']) ? (int)$requestData['itemsPerPage'] : 10;
+        $page = isset($requestData['page']) ? (int)$requestData['page'] : 1;
 
-        return new JsonResponse($categories, Response::HTTP_OK);
+        $data = $this->categoryService->getCategories($requestData, $itemsPerPage, $page);
+
+        return new JsonResponse($data, Response::HTTP_OK);
     }
+
 
     /**
      * @param int $id

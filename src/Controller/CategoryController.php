@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 /**
@@ -46,6 +47,7 @@ class CategoryController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'get_categories', methods: ['GET'])]
+//    #[IsGranted("ROLE_USER")]
     public function getCategories(Request $request): JsonResponse
     {
         $requestData = $request->query->all();

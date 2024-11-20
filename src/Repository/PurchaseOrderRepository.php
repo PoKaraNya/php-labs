@@ -43,7 +43,27 @@ class PurchaseOrderRepository extends ServiceEntityRepository
     ])]
     public function getAllByFilter(array $data, int $itemsPerPage, int $page): array
     {
-        $queryBuilder = $this->createQueryBuilder('purchaseOrder');
+        $queryBuilder = $this->createQueryBuilder('purchase_order');
+
+        if (!empty($data['supplier_id'])) {
+            $queryBuilder->andWhere('purchase_order.supplier = :supplierId')
+                ->setParameter('supplierId', (int)$data['supplier_id']);
+        }
+
+        if (!empty($data['start_date'])) {
+            $queryBuilder->andWhere('purchase_order.orderDate >= :startDate')
+                ->setParameter('startDate', new \DateTime($data['start_date']));
+        }
+
+        if (!empty($data['end_date'])) {
+            $queryBuilder->andWhere('purchase_order.orderDate <= :endDate')
+                ->setParameter('endDate', new \DateTime($data['end_date']));
+        }
+
+        if (!empty($data['status'])) {
+            $queryBuilder->andWhere('purchase_order.status = :status')
+                ->setParameter('status', $data['status']);
+        }
 
         return $this->paginationService->paginate($queryBuilder, $itemsPerPage, $page);
     }

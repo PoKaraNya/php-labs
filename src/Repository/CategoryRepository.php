@@ -51,6 +51,11 @@ class CategoryRepository extends ServiceEntityRepository
                 ->setParameter('name', '%' . $data['name'] . '%');
         }
 
+        if (!empty($data['description'])) {
+            $queryBuilder->andWhere('category.description LIKE :description')
+                ->setParameter('description', '%' . $data['description'] . '%');
+        }
+
         return $this->paginationService->paginate($queryBuilder, $itemsPerPage, $page);
     }
 

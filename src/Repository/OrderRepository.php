@@ -45,6 +45,26 @@ class OrderRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('orders');
 
+        if (!empty($data['customer_id'])) {
+            $queryBuilder->andWhere('orders.customer = :customerId')
+                ->setParameter('customerId', (int)$data['customer_id']);
+        }
+
+        if (!empty($data['start_date'])) {
+            $queryBuilder->andWhere('orders.orderDate >= :startDate')
+                ->setParameter('startDate', new \DateTime($data['start_date']));
+        }
+
+        if (!empty($data['end_date'])) {
+            $queryBuilder->andWhere('orders.orderDate <= :endDate')
+                ->setParameter('endDate', new \DateTime($data['end_date']));
+        }
+
+        if (!empty($data['status'])) {
+            $queryBuilder->andWhere('orders.status = :status')
+                ->setParameter('status', $data['status']);
+        }
+
         return $this->paginationService->paginate($queryBuilder, $itemsPerPage, $page);
     }
 

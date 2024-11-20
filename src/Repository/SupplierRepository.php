@@ -45,6 +45,31 @@ class SupplierRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('supplier');
 
+        if (!empty($data['name'])) {
+            $queryBuilder->andWhere('supplier.name LIKE :name')
+                ->setParameter('name', '%' . $data['name'] . '%');
+        }
+
+        if (!empty($data['contact_name'])) {
+            $queryBuilder->andWhere('supplier.contactName LIKE :contactName')
+                ->setParameter('contactName', '%' . $data['contact_name'] . '%');
+        }
+
+        if (!empty($data['contact_phone'])) {
+            $queryBuilder->andWhere('supplier.contactPhone LIKE :contactPhone')
+                ->setParameter('contactPhone', '%' . $data['contact_phone'] . '%');
+        }
+
+        if (!empty($data['contact_email'])) {
+            $queryBuilder->andWhere('supplier.contactEmail LIKE :contactEmail')
+                ->setParameter('contactEmail', '%' . $data['contact_email'] . '%');
+        }
+
+        if (!empty($data['address'])) {
+            $queryBuilder->andWhere('supplier.address LIKE :address')
+                ->setParameter('address', '%' . $data['address'] . '%');
+        }
+
         return $this->paginationService->paginate($queryBuilder, $itemsPerPage, $page);
     }
 }

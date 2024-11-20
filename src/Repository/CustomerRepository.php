@@ -45,8 +45,23 @@ class CustomerRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('customer');
 
         if (!empty($data['name'])) {
-            $queryBuilder->andWhere('category.name LIKE :name')
+            $queryBuilder->andWhere('customer.name LIKE :name')
                 ->setParameter('name', '%' . $data['name'] . '%');
+        }
+
+        if (!empty($data['email'])) {
+            $queryBuilder->andWhere('customer.email LIKE :email')
+                ->setParameter('email', '%' . $data['email'] . '%');
+        }
+
+        if (!empty($data['phone'])) {
+            $queryBuilder->andWhere('customer.phone LIKE :phone')
+                ->setParameter('phone', '%' . $data['phone'] . '%');
+        }
+
+        if (!empty($data['address'])) {
+            $queryBuilder->andWhere('customer.address LIKE :address')
+                ->setParameter('address', '%' . $data['address'] . '%');
         }
 
         return $this->paginationService->paginate($queryBuilder, $itemsPerPage, $page);

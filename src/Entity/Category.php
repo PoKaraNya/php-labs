@@ -2,18 +2,44 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'get:item:category']
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => 'get:collection:category']
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'get:item:category'],
+            denormalizationContext: ['groups' => 'post:collection:category']
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'get:item:category'],
+            denormalizationContext: ['groups' => 'patch:item:category']
+        ),
+        new Delete(),
+    ],
+)]
 class Category implements JsonSerializable
 {
     /**
@@ -22,6 +48,7 @@ class Category implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get:item:category', 'get:collection:category'])]
     private ?int $id = null;
 
     /**
@@ -33,6 +60,12 @@ class Category implements JsonSerializable
         max: 255,
         maxMessage: 'Name cannot be longer than {{ limit }} characters.'
     )]
+    #[Groups([
+        'get:item:category',
+        'get:collection:category',
+        'post:collection:category',
+        'patch:item:category'
+    ])]
     private ?string $name = null;
 
 
@@ -44,6 +77,12 @@ class Category implements JsonSerializable
         max: 255,
         maxMessage: 'Description cannot be longer than {{ limit }} characters.'
     )]
+    #[Groups([
+        'get:item:category',
+        'get:collection:category',
+        'post:collection:category',
+        'patch:item:category'
+    ])]
     private ?string $description = null;
 
     /**
@@ -53,6 +92,7 @@ class Category implements JsonSerializable
     #[Assert\All([
         new Assert\Type(type: Product::class, message: 'Each product must be a valid Product object.')
     ])]
+    #[Groups(['get:item:category'])]
     private Collection $products;
 
     /**

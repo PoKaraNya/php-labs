@@ -2,12 +2,19 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -15,6 +22,25 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  */
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'get:item:customer'],
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => 'get:collection:customer']
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'get:item:customer'],
+            denormalizationContext: ['groups' => 'post:collection:customer']
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'get:item:customer'],
+            denormalizationContext: ['groups' => 'patch:item:customer']
+        ),
+        new Delete(),
+    ],
+)]
 class Customer implements JsonSerializable
 {
     /**
@@ -23,6 +49,7 @@ class Customer implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get:item:customer', 'get:collection:customer'])]
     private ?int $id = null;
 
     /**
@@ -34,6 +61,12 @@ class Customer implements JsonSerializable
         max: 255,
         maxMessage: 'Name cannot be longer than {{ limit }} characters.'
     )]
+    #[Groups([
+        'get:item:customer',
+        'get:collection:customer',
+        'post:collection:customer',
+        'patch:item:customer'
+    ])]
     private ?string $name = null;
 
     /**
@@ -46,6 +79,12 @@ class Customer implements JsonSerializable
         max: 255,
         maxMessage: 'Email cannot be longer than {{ limit }} characters.'
     )]
+    #[Groups([
+        'get:item:customer',
+        'get:collection:customer',
+        'post:collection:customer',
+        'patch:item:customer'
+    ])]
     private ?string $email = null;
 
     /**
@@ -57,6 +96,12 @@ class Customer implements JsonSerializable
         pattern: '/^\+?[0-9]{10,15}$/',
         message: 'Phone number must be valid and contain 10 to 15 digits.'
     )]
+    #[Groups([
+        'get:item:customer',
+        'get:collection:customer',
+        'post:collection:customer',
+        'patch:item:customer'
+    ])]
     private ?string $phone = null;
 
     /**
@@ -67,6 +112,12 @@ class Customer implements JsonSerializable
         max: 255,
         maxMessage: 'Address cannot be longer than {{ limit }} characters.'
     )]
+    #[Groups([
+        'get:item:customer',
+        'get:collection:customer',
+        'post:collection:customer',
+        'patch:item:customer'
+    ])]
     private ?string $address = null;
 
     /**
@@ -76,6 +127,7 @@ class Customer implements JsonSerializable
     #[Assert\All([
         new Assert\Type(type: Order::class, message: 'Each item must be a valid Order object.')
     ])]
+    #[Groups(['get:item:customer'])]
     private Collection $orders;
 
     /**

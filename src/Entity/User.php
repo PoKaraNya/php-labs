@@ -2,27 +2,66 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'get:item:user']
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => 'get:collection:user']
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'get:item:user'],
+            denormalizationContext: ['groups' => 'post:collection:user']
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'get:item:user'],
+            denormalizationContext: ['groups' => 'patch:item:user']
+        ),
+        new Delete(),
+    ],
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get:item:user', 'get:collection:user'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Groups([
+        'get:item:user',
+        'get:collection:user',
+        'post:collection:user',
+        'patch:item:user'
+    ])]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Groups([
+        'get:item:user',
+        'get:collection:user',
+        'post:collection:user',
+        'patch:item:user'
+    ])]
     private array $roles = [];
 
     /**

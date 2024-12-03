@@ -2,16 +2,42 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\PurchaseOrderItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: PurchaseOrderItemRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'get:item:purchase-order-item'],
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => 'get:collection:purchase-order-item']
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'get:item:purchase-order-item'],
+            denormalizationContext: ['groups' => 'post:collection:purchase-order-item']
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'get:item:purchase-order-item'],
+            denormalizationContext: ['groups' => 'patch:item:purchase-order-item']
+        ),
+        new Delete(),
+    ],
+)]
 class PurchaseOrderItem implements JsonSerializable
 {
     /**
@@ -20,6 +46,7 @@ class PurchaseOrderItem implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get:item:purchase-order-item', 'get:collection:purchase-order-item'])]
     private ?int $id = null;
 
     /**
@@ -28,6 +55,12 @@ class PurchaseOrderItem implements JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'purchaseOrderItems')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'Purchase order cannot be null.')]
+    #[Groups([
+        'get:item:purchase-order-item',
+        'get:collection:purchase-order-item',
+        'post:collection:purchase-order-item',
+        'patch:item:purchase-order-item'
+    ])]
     private ?PurchaseOrder $purchaseOrder = null;
 
     /**
@@ -36,6 +69,12 @@ class PurchaseOrderItem implements JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'purchaseOrderItems')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'Product cannot be null.')]
+    #[Groups([
+        'get:item:purchase-order-item',
+        'get:collection:purchase-order-item',
+        'post:collection:purchase-order-item',
+        'patch:item:purchase-order-item'
+    ])]
     private ?Product $product = null;
 
     /**
@@ -44,6 +83,12 @@ class PurchaseOrderItem implements JsonSerializable
     #[ORM\Column]
     #[Assert\Positive(message: 'Quantity must be a positive number.')]
     #[Assert\NotNull(message: 'Quantity cannot be null.')]
+    #[Groups([
+        'get:item:purchase-order-item',
+        'get:collection:purchase-order-item',
+        'post:collection:purchase-order-item',
+        'patch:item:purchase-order-item'
+    ])]
     private ?int $quantity = null;
 
     /**
@@ -52,6 +97,12 @@ class PurchaseOrderItem implements JsonSerializable
     #[ORM\Column]
     #[Assert\Positive(message: 'Price per unit must be a positive number.')]
     #[Assert\NotNull(message: 'Price per unit cannot be null.')]
+    #[Groups([
+        'get:item:purchase-order-item',
+        'get:collection:purchase-order-item',
+        'post:collection:purchase-order-item',
+        'patch:item:purchase-order-item'
+    ])]
     private ?int $pricePerUnit = null;
     /**
      * @return int|null

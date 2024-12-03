@@ -2,15 +2,41 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\InventoryRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InventoryRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'get:item:inventory'],
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => 'get:collection:inventory']
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'get:item:inventory'],
+            denormalizationContext: ['groups' => 'post:collection:inventory']
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'get:item:inventory'],
+            denormalizationContext: ['groups' => 'patch:item:inventory']
+        ),
+        new Delete(),
+    ],
+)]
 class Inventory implements JsonSerializable
 {
     /**
@@ -19,6 +45,7 @@ class Inventory implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get:item:inventory', 'get:collection:inventory'])]
     private ?int $id = null;
 
     /**
@@ -27,6 +54,12 @@ class Inventory implements JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'inventories')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'Product must be associated with an inventory record.')]
+    #[Groups([
+        'get:item:inventory',
+        'get:collection:inventory',
+        'post:collection:inventory',
+        'patch:item:inventory'
+    ])]
     private ?Product $product = null;
 
     /**
@@ -35,6 +68,12 @@ class Inventory implements JsonSerializable
     #[ORM\Column]
     #[Assert\NotNull(message: 'Quantity cannot be null.')]
     #[Assert\PositiveOrZero(message: 'Quantity must be zero or a positive value.')]
+    #[Groups([
+        'get:item:inventory',
+        'get:collection:inventory',
+        'post:collection:inventory',
+        'patch:item:inventory'
+    ])]
     private ?int $quantity = null;
 
     /**
@@ -46,6 +85,12 @@ class Inventory implements JsonSerializable
         type: DateTimeInterface::class,
         message: 'Last updated must be a valid date and time.'
     )]
+    #[Groups([
+        'get:item:inventory',
+        'get:collection:inventory',
+        'post:collection:inventory',
+        'patch:item:inventory'
+    ])]
     private ?DateTimeInterface $lastUpdated = null;
 
     /**

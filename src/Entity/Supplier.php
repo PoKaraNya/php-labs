@@ -2,18 +2,44 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\SupplierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: SupplierRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'get:item:supplier'],
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => 'get:collection:supplier']
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'get:item:supplier'],
+            denormalizationContext: ['groups' => 'post:collection:supplier']
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'get:item:supplier'],
+            denormalizationContext: ['groups' => 'patch:item:supplier']
+        ),
+        new Delete(),
+    ],
+)]
 class Supplier implements JsonSerializable
 {
     /**
@@ -22,6 +48,7 @@ class Supplier implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get:item:supplier', 'get:collection:supplier'])]
     private ?int $id = null;
 
     /**
@@ -29,6 +56,12 @@ class Supplier implements JsonSerializable
      */
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Name cannot be blank.')]
+    #[Groups([
+        'get:item:supplier',
+        'get:collection:supplier',
+        'post:collection:supplier',
+        'patch:item:supplier'
+    ])]
     private ?string $name = null;
 
     /**
@@ -36,6 +69,12 @@ class Supplier implements JsonSerializable
      */
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Contact name cannot be blank.')]
+    #[Groups([
+        'get:item:supplier',
+        'get:collection:supplier',
+        'post:collection:supplier',
+        'patch:item:supplier'
+    ])]
     private ?string $contactName = null;
 
     /**
@@ -47,6 +86,12 @@ class Supplier implements JsonSerializable
         pattern: '/^\+?[0-9]*$/',
         message: 'Contact phone must contain only numbers and an optional "+" at the beginning.'
     )]
+    #[Groups([
+        'get:item:supplier',
+        'get:collection:supplier',
+        'post:collection:supplier',
+        'patch:item:supplier'
+    ])]
     private ?string $contactPhone = null;
 
     /**
@@ -55,6 +100,12 @@ class Supplier implements JsonSerializable
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Contact email cannot be blank.')]
     #[Assert\Email(message: 'Invalid email address.')]
+    #[Groups([
+        'get:item:supplier',
+        'get:collection:supplier',
+        'post:collection:supplier',
+        'patch:item:supplier'
+    ])]
     private ?string $contactEmail = null;
 
     /**
@@ -62,18 +113,26 @@ class Supplier implements JsonSerializable
      */
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Address cannot be blank.')]
+    #[Groups([
+        'get:item:supplier',
+        'get:collection:supplier',
+        'post:collection:supplier',
+        'patch:item:supplier'
+    ])]
     private ?string $address = null;
 
     /**
      * @var Collection<int, Product>
      */
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'supplier')]
+    #[Groups(['get:item:supplier'])]
     private Collection $products;
 
     /**
      * @var Collection<int, PurchaseOrder>
      */
     #[ORM\OneToMany(targetEntity: PurchaseOrder::class, mappedBy: 'supplier')]
+    #[Groups(['get:item:supplier'])]
     private Collection $purchaseOrders;
     /**
      *

@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\OrderRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,6 +16,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -17,6 +24,25 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'get:item:`order`'],
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => 'get:collection:`order`']
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'get:item:`order`'],
+            denormalizationContext: ['groups' => 'post:collection:`order`']
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'get:item:`order`'],
+            denormalizationContext: ['groups' => 'patch:item:`order`']
+        ),
+        new Delete(),
+    ],
+)]
 class Order implements JsonSerializable
 {
     /**
@@ -25,6 +51,7 @@ class Order implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get:item:`order`', 'get:collection:`order`'])]
     private ?int $id = null;
 
     /**
@@ -36,6 +63,12 @@ class Order implements JsonSerializable
         type: DateTimeInterface::class,
         message: 'Order date must be a valid date and time.'
     )]
+    #[Groups([
+        'get:item:`order`',
+        'get:collection:`order`',
+        'post:collection:`order`',
+        'patch:item:`order`'
+    ])]
     private ?DateTimeInterface $orderDate = null;
 
     /**
@@ -47,6 +80,12 @@ class Order implements JsonSerializable
         choices: ['Pending', 'Processing', 'Shipped', 'Completed', 'Cancelled'],
         message: 'Status must be one of "Pending", "Processing", "Shipped", "Completed", or "Cancelled".'
     )]
+    #[Groups([
+        'get:item:`order`',
+        'get:collection:`order`',
+        'post:collection:`order`',
+        'patch:item:`order`'
+    ])]
     private ?string $status = null;
 
     /**
@@ -55,6 +94,12 @@ class Order implements JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'Customer must be associated with the order.')]
+    #[Groups([
+        'get:item:`order`',
+        'get:collection:`order`',
+        'post:collection:`order`',
+        'patch:item:`order`'
+    ])]
     private ?Customer $customer = null;
 
     /**
@@ -62,6 +107,7 @@ class Order implements JsonSerializable
      */
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'orderId', cascade: ['persist', 'remove'])]
     #[Assert\Valid]
+    #[Groups(['get:item:`order`'])]
     private Collection $orderItems;
 
     /**
@@ -69,6 +115,7 @@ class Order implements JsonSerializable
      */
     #[ORM\OneToMany(targetEntity: Shipment::class, mappedBy: 'orderId', cascade: ['persist', 'remove'])]
     #[Assert\Valid]
+    #[Groups(['get:item:`order`'])]
     private Collection $shipments;
 
     /**

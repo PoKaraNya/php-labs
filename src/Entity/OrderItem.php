@@ -2,14 +2,40 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\OrderItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: OrderItemRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'get:item:order-item']
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => 'get:collection:order-item']
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'get:item:order-item'],
+            denormalizationContext: ['groups' => 'post:collection:order-item']
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'get:item:order-item'],
+            denormalizationContext: ['groups' => 'patch:item:order-item']
+        ),
+        new Delete(),
+    ],
+)]
 class OrderItem implements JsonSerializable
 {
     /**
@@ -18,6 +44,7 @@ class OrderItem implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get:item:order-item', 'get:collection:order-item'])]
     private ?int $id = null;
 
     /**
@@ -26,6 +53,12 @@ class OrderItem implements JsonSerializable
     #[ORM\Column]
     #[Assert\NotNull(message: 'Quantity cannot be null.')]
     #[Assert\GreaterThanOrEqual(value: 1, message: 'Quantity must be at least 1.')]
+    #[Groups([
+        'get:item:order-item',
+        'get:collection:order-item',
+        'post:collection:order-item',
+        'patch:item:order-item'
+    ])]
     private ?int $quantity = null;
 
     /**
@@ -34,6 +67,12 @@ class OrderItem implements JsonSerializable
     #[ORM\Column]
     #[Assert\NotNull(message: 'Price per unit cannot be null.')]
     #[Assert\GreaterThanOrEqual(value: 0, message: 'Price per unit must be a positive value.')]
+    #[Groups([
+        'get:item:order-item',
+        'get:collection:order-item',
+        'post:collection:order-item',
+        'patch:item:order-item'
+    ])]
     private ?int $pricePerUnit = null;
 
     /**
@@ -42,6 +81,12 @@ class OrderItem implements JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'Order cannot be null.')]
+    #[Groups([
+        'get:item:order-item',
+        'get:collection:order-item',
+        'post:collection:order-item',
+        'patch:item:order-item'
+    ])]
     private ?Order $order = null;
 
     /**
@@ -50,6 +95,12 @@ class OrderItem implements JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'Product cannot be null.')]
+    #[Groups([
+        'get:item:order-item',
+        'get:collection:order-item',
+        'post:collection:order-item',
+        'patch:item:order-item'
+    ])]
     private ?Product $product = null;
 
     /**

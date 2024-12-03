@@ -3,12 +3,18 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -16,7 +22,25 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => 'get:item:product']
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => 'get:collection:product']
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'get:item:product'],
+            denormalizationContext: ['groups' => 'post:collection:product']
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'get:item:product'],
+            denormalizationContext: ['groups' => 'patch:item:product']
+        ),
+        new Delete(),
+    ],
+)]
 class Product implements JsonSerializable
 {
     /**
@@ -25,6 +49,7 @@ class Product implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get:item:product', 'get:collection:product'])]
     private ?int $id = null;
 
     /**
@@ -33,6 +58,12 @@ class Product implements JsonSerializable
     #[ORM\Column(length: 255)]
     #[Assert\NotNull(message: 'Name cannot be null.')]
     #[Assert\Length(min: 3, max: 255, minMessage: 'Name must be at least {{ limit }} characters long.', maxMessage: 'Name cannot be longer than {{ limit }} characters.')]
+    #[Groups([
+        'get:item:product',
+        'get:collection:product',
+        'post:collection:product',
+        'patch:item:product'
+    ])]
     private ?string $name = null;
 
     /**
@@ -41,6 +72,12 @@ class Product implements JsonSerializable
     #[ORM\Column(length: 255)]
     #[Assert\NotNull(message: 'Description cannot be null.')]
     #[Assert\Length(min: 10, max: 255, minMessage: 'Description must be at least {{ limit }} characters long.', maxMessage: 'Description cannot be longer than {{ limit }} characters.')]
+    #[Groups([
+        'get:item:product',
+        'get:collection:product',
+        'post:collection:product',
+        'patch:item:product'
+    ])]
     private ?string $description = null;
 
     /**
@@ -49,6 +86,12 @@ class Product implements JsonSerializable
     #[ORM\Column]
     #[Assert\NotNull(message: 'Price cannot be null.')]
     #[Assert\GreaterThanOrEqual(value: 0, message: 'Price must be a positive number or zero.')]
+    #[Groups([
+        'get:item:product',
+        'get:collection:product',
+        'post:collection:product',
+        'patch:item:product'
+    ])]
     private ?int $price = null;
 
     /**
@@ -57,6 +100,12 @@ class Product implements JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'Category cannot be null.')]
+    #[Groups([
+        'get:item:product',
+        'get:collection:product',
+        'post:collection:product',
+        'patch:item:product'
+    ])]
     private ?Category $category = null;
 
     /**
@@ -65,24 +114,33 @@ class Product implements JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'Supplier cannot be null.')]
+    #[Groups([
+        'get:item:product',
+        'get:collection:product',
+        'post:collection:product',
+        'patch:item:product'
+    ])]
     private ?Supplier $supplier = null;
 
     /**
      * @var Collection<int, Inventory>
      */
     #[ORM\OneToMany(targetEntity: Inventory::class, mappedBy: 'product')]
+    #[Groups(['get:item:product'])]
     private Collection $inventories;
 
     /**
      * @var Collection<int, PurchaseOrderItem>
      */
     #[ORM\OneToMany(targetEntity: PurchaseOrderItem::class, mappedBy: 'product')]
+    #[Groups(['get:item:product'])]
     private Collection $purchaseOrderItems;
 
     /**
      * @var Collection<int, OrderItem>
      */
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'product')]
+    #[Groups(['get:item:product'])]
     private Collection $orderItems;
     /**
      *

@@ -26,4 +26,3 @@ services:
   App\EventListener\RuntimeConstraintExceptionListener:
     tags:
       - { name: 'kernel.event_listener', event: 'kernel.exception' }
-

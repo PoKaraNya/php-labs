@@ -8,7 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Repository\ProductRepository;
+use App\Action\Product\ProductAction;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  *
  */
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\Entity()]
 #[ApiResource(
     operations: [
         new Get(
@@ -39,6 +39,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => 'patch:item:product']
         ),
         new Delete(),
+        new Patch(
+            uriTemplate: '/products/{id}/update-price',
+            controller: ProductAction::class,
+            denormalizationContext: ['groups' => 'patch:item:product'],
+            name: 'update_product_price'
+        ),
     ],
 )]
 class Product implements JsonSerializable
@@ -396,7 +402,8 @@ class Product implements JsonSerializable
    {
         return [
             'id' => $this->getId(),
-            'categoryId' => $this->getCategory(),
+//            'categoryId' => $this->getCategory(),
+            'category' => $this->category ? $this->category->getId() : null,
             'supplierId' => $this->getSupplier(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),

@@ -1,4 +1,12 @@
 api_platform:
-    resource: .
+    resource:
+        path: '/products/{id}/update-price'
+        methods: [ 'PATCH' ]
+        controller: App\Action\Product\ProductAction
+        defaults:
+            _api_resource_class: App\Entity\Product
+            _api_item_operation_name: 'update_product_price'
+
     type: api_platform
     prefix: /api
+

@@ -7,9 +7,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
+/**
+ *
+ */
 #[AsController]
 class SupplierAction extends AbstractController
 {
+    /**
+     * @param Supplier $data
+     * @return JsonResponse
+     */
     public function __invoke(Supplier $data): JsonResponse
     {
         $products = $data->getProducts()->toArray();

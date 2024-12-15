@@ -26,3 +26,11 @@ services:
   App\EventListener\RuntimeConstraintExceptionListener:
     tags:
       - { name: 'kernel.event_listener', event: 'kernel.exception' }
+
+  App\EventListener\ProductPostUpdateListener:
+    tags:
+      - { name: doctrine.event_listener, event: preUpdate }
+
+  App\EventListener\CustomerPostUpdateListener:
+    tags:
+      - { name: doctrine.event_listener, event: postUpdate }

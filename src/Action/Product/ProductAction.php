@@ -9,14 +9,30 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
+/**
+ *
+ */
 #[AsController]
 class ProductAction extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
+
+    /**
+     * @param Request $request
+     * @param Product $product
+     * @return JsonResponse
+     */
     public function __invoke(Request $request, Product $product): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

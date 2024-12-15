@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Repository\OrderRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -22,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  *
  */
-#[ORM\Entity(repositoryClass: OrderRepository::class)]
+#[ORM\Entity()]
 #[ORM\Table(name: '`order`')]
 #[ApiResource(
     operations: [

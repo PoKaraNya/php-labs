@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  *
  */
-#[ORM\Entity(repositoryClass: CustomerRepository::class)]
+#[ORM\Entity()]
 #[ApiResource(
     operations: [
         new Get(
@@ -121,7 +120,7 @@ class Customer implements JsonSerializable
     private ?string $address = null;
 
     /**
-     * @var Collection|ArrayCollection
+     * @var Collection
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'customer', orphanRemoval: true)]
     #[Assert\All([
@@ -129,6 +128,11 @@ class Customer implements JsonSerializable
     ])]
     #[Groups(['get:item:customer'])]
     private Collection $orders;
+
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'customer', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['get:item:customer', 'get:collection:customer', 'post:collection:customer', 'patch:item:customer'])]
+    private ?User $user = null;
 
     /**
      *
@@ -260,6 +264,18 @@ class Customer implements JsonSerializable
         return $this;
     }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
     /**
      * @return array
      */
@@ -270,7 +286,7 @@ class Customer implements JsonSerializable
             'name' => $this->getName(),
             'email' => $this->getEmail(),
             'phone' => $this->getPhone(),
-            'address' => $this->getAddress(),
+            'address' => $this->getAddress()
         ];
     }
 
